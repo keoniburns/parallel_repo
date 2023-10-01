@@ -60,7 +60,7 @@ int main() {
 float Lriemann(float lower, float upper, float delta) {
     static float result;
     float x = 0.0;
-    int newUp = (int)upper / delta;
+    int newUp = (int)(upper - lower) / delta;
     cout << "upper bound is: " << newUp << endl;
 
     result = velocity(lower);
