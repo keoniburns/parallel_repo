@@ -47,7 +47,7 @@ int main() {
 
     /* Print the result */
     if (curRank == 0) {
-        printf("With n = % quadratures, our estimate\n", 1 / delta);
+        printf("With n = %f quadratures, our estimate\n", 1 / delta);
         printf("of the integral from %f to %f = %15.14lf\n", start, end, total);
     }
 
@@ -79,7 +79,7 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper) {
 
     if (curRank == 0) {
         printf("Enter a, b, and n\n");
-        rc = scanf("%f %f %d", lower, upper);
+        rc = scanf("%f %f", lower, upper);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
