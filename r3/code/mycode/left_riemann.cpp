@@ -61,6 +61,7 @@ float Lriemann(float lower, float upper, float delta) {
     static float result;
     float x = 0.0;
     int newUp = (int)upper / delta;
+    cout << "upper bound is: " << newUp << endl;
 
     result = velocity(lower);
     // result[1] = acceleration(lower);
@@ -69,7 +70,7 @@ float Lriemann(float lower, float upper, float delta) {
         result += velocity(x) * delta;
         // result[1] += acceleration(x) * delta;
         // cout.precision(18);
-        cout << "time: " << x << ", position: " << result << endl;
+        // cout << "time: " << x << ", position: " << result << endl;
     }
     return result;
 }
