@@ -80,7 +80,7 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* numQu
 
     if (curRank == 0) {
         printf("Enter a, b, and n\n");
-        rc = scanf("%lf %lf %d", lower, upper, numQuads);
+        rc = scanf("%f %f %d", lower, upper, numQuads);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
