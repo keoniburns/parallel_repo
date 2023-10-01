@@ -43,12 +43,12 @@ int main() {
     cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
          << endl;
 
-    MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&area, &total, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     /* Print the result */
     if (curRank == 0) {
         printf("With n = %f quadratures, our estimate\n", 1 / delta);
-        printf("of the integral from %f to %f = %15.14lf\n", start, end, total);
+        printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
     /* Shut down MPI */
@@ -78,7 +78,7 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper) {
     int rc = 0;
 
     if (curRank == 0) {
-        printf("Enter a, b, and n\n");
+        printf("Enter a, b\n");
         rc = scanf("%f %f", lower, upper);
         if (rc < 0) perror("Get_input");
     }
