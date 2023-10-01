@@ -38,7 +38,7 @@ int main() {
     float end = start + ratio;
 
     float* results;
-    area = Lriemann(lower, upper, delta);
+    area = Lriemann(start, end, delta);
 
     cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
          << endl;
@@ -58,7 +58,7 @@ int main() {
 
 // left riemann
 float Lriemann(float lower, float upper, float delta) {
-    static float result;  // res[0] = pos, res[1] = vel
+    static float result;
     float x = 0.0;
     float newUp = upper / delta;
 
