@@ -64,7 +64,7 @@ float Lriemann(float lower, float upper, float delta) {
 
     result = velocity(lower);
     // result[1] = acceleration(lower);
-    for (int time = 1; time < newUp; time++) {
+    for (int time = lower; time < newUp; time++) {
         x += delta;
         result += velocity(x) * delta;
         // result[1] += acceleration(x) * delta;
