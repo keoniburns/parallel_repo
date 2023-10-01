@@ -60,7 +60,7 @@ int main() {
 float Lriemann(float lower, float upper, float delta) {
     static float result;
     float x = 0.0;
-    float newUp = upper / delta;
+    int newUp = (int)upper / delta;
 
     result = velocity(lower);
     // result[1] = acceleration(lower);
