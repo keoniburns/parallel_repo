@@ -1,0 +1,1 @@
+mpicxx -g -Wall -o left left_riemann.cpp  
