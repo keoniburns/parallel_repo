@@ -17,12 +17,11 @@ float Lriemann(float lower, float upper, float delta);
 void Get_input(int curRank, int numProcs, float* lower, float* upper);
 
 int main() {
-    int curRank, numProcs, numQuads;
+    int curRank, numProcs;
     float lower = 0;
     float upper = 1800;
     float delta = 0.01;
     float area, total;
-
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
 
@@ -48,7 +47,7 @@ int main() {
 
     /* Print the result */
     if (curRank == 0) {
-        printf("With n = %f quadratures, our estimate\n", 1 / delta);
+        printf("With n = % quadratures, our estimate\n", 1 / delta);
         printf("of the integral from %f to %f = %15.14lf\n", start, end, total);
     }
 
@@ -75,17 +74,17 @@ float Lriemann(float lower, float upper, float delta) {
     return result;
 }
 
-void Get_input(int curRank, int numProcs, float* lower, float* upper, int* numQuads) {
+void Get_input(int curRank, int numProcs, float* lower, float* upper) {
     int rc = 0;
 
     if (curRank == 0) {
         printf("Enter a, b, and n\n");
-        rc = scanf("%f %f %d", lower, upper, numQuads);
+        rc = scanf("%f %f %d", lower, upper);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
     MPI_Bcast(upper, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(numQuads, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    // MPI_Bcast, 1, MPI_INT, 0, MPI_COMM_WORLD);
 } /* Get_input */
 
 // these all return the respective attribute value using the antiderivative
