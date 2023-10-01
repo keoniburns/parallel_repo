@@ -72,6 +72,7 @@ float Lriemann(float lower, float upper, float delta) {
         // cout.precision(18);
         // cout << "time: " << x << ", position: " << result << endl;
     }
+    result *= delta;
     return result;
 }
 
