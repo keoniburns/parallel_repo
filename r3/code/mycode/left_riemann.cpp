@@ -14,7 +14,7 @@ using namespace std;
 float acceleration(float time);
 float velocity(float time);
 float Lriemann(float lower, float upper, float delta);
-void Get_input(int curRank, int numProcs, float* lower, float* upper, int* numQuads);
+void Get_input(int curRank, int numProcs, float* lower, float* upper);
 
 int main() {
     int curRank, numProcs, numQuads;
@@ -32,7 +32,7 @@ int main() {
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
     /* Find out how many processes are being used */
-    Get_input(curRank, numProcs, &lower, &upper, &numQuads);
+    Get_input(curRank, numProcs, &lower, &upper);
 
     float ratio = upper / numProcs;
     float start = curRank * ratio;
@@ -48,7 +48,7 @@ int main() {
 
     /* Print the result */
     if (curRank == 0) {
-        printf("With n = %d quadratures, our estimate\n", 1 / delta);
+        printf("With n = %f quadratures, our estimate\n", 1 / delta);
         printf("of the integral from %f to %f = %15.14lf\n", start, end, total);
     }
 
@@ -83,8 +83,8 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* numQu
         rc = scanf("%f %f %d", lower, upper, numQuads);
         if (rc < 0) perror("Get_input");
     }
-    MPI_Bcast(lower, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(upper, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(lower, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(upper, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
     MPI_Bcast(numQuads, 1, MPI_INT, 0, MPI_COMM_WORLD);
 } /* Get_input */
 
