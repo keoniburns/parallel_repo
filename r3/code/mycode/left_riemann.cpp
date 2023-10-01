@@ -69,7 +69,7 @@ float Lriemann(float lower, float upper, float delta) {
         result += velocity(x) * delta;
         // result[1] += acceleration(x) * delta;
         // cout.precision(18);
-        // cout << "time: " << x << ", position: " << result[0] << ", velocity: " << result[1] << endl;
+        cout << "time: " << x << ", position: " << result[0] << ", velocity: " << result[1] << endl;
     }
     return result;
 }
