@@ -18,9 +18,8 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n);
 
 int main() {
     int curRank, numProcs, n;
-    float lower = 0;
-    float upper = 1800;
-    float delta = 0.01;
+    float lower, upper;
+    // float delta = 0.01;
     float area, total;
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
@@ -33,18 +32,17 @@ int main() {
     /* Find out how many processes are being used */
     Get_input(curRank, numProcs, &lower, &upper, &n);
 
-    float ratio = (upper - lower) / n;
+    float step = (upper - lower) / n;
     int numBoxes = n / numProcs;
-    float start = lower + curRank * ratio;
-    float end = start + numBoxes * ratio;
+    float start = lower + curRank * step;
+    float end = start + numBoxes * step;
 
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
-           numBoxes, ratio);
+           numBoxes, step);
     // float* results;
-    area = Lriemann(start, end, ratio, numBoxes);
+    area = Lriemann(start, end, step, numBoxes);
 
-    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area,
-           (ratio * numBoxes));
+    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
 
     // cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
     //      << endl;
@@ -53,7 +51,7 @@ int main() {
 
     /* Print the result */
     if (curRank == 0) {
-        printf("With n = %f quadratures, our estimate\n", 1 / delta);
+        printf("With n = %f quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
@@ -87,7 +85,7 @@ float Lriemann(float lower, float upper, float delta, int rectangles) {
     lval = velocity(lower);
     x = lower;
 
-    for (int i = 1; i <= rectangles - 1; i++) {
+    for (int i = 1; i < rectangles; i++) {
         area += lval * delta;
         x += delta;
         lval = velocity(x);
