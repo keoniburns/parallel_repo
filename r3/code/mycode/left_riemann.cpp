@@ -19,8 +19,7 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n);
 int main() {
     int curRank, numProcs, n;
     float lower, upper;
-    // float delta = 0.01;
-    float area, total;
+    float area = 0, total = 0;
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
 
@@ -32,9 +31,9 @@ int main() {
     /* Find out how many processes are being used */
     Get_input(curRank, numProcs, &lower, &upper, &n);
 
-    float step = 0.01;
+    float step = (upper - lower) / n;
     int numBoxes = n / numProcs;
-    float increment = step * numBoxes;
+    int increment = step * numBoxes;
     float start = lower + (curRank * increment);
     float end = start + (increment);
 
