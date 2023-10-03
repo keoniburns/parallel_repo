@@ -51,7 +51,7 @@ int main() {
 
     /* Print the result */
     if (curRank == 0) {
-        printf("With n = %f quadratures, our estimate\n", n);
+        printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
