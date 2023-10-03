@@ -14,7 +14,7 @@ using namespace std;
 float acceleration(float time);
 float velocity(float time);
 float Lriemann(float lower, float upper, float delta, int rectangles);
-void Get_input(int curRank, int numProcs, float* lower, float* upper, float* n);
+void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n);
 
 int main() {
     int curRank, numProcs, n;
@@ -95,7 +95,7 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n) {
 
     if (curRank == 0) {
         printf("Enter a, b, n\n");
-        rc = scanf("%f %f", lower, upper, n);
+        rc = scanf("%f %f %d", lower, upper, n);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
