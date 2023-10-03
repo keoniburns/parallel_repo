@@ -34,7 +34,7 @@ int main() {
     Get_input(curRank, numProcs, &lower, &upper, &n);
 
     float ratio = (upper - lower) / n;
-    float numBoxes = n / numProcs;
+    int numBoxes = n / numProcs;
     float start = lower + curRank * ratio;
     float end = start + numBoxes * ratio;
 
