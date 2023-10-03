@@ -13,11 +13,11 @@ using namespace std;
 // declare function protos
 float acceleration(float time);
 float velocity(float time);
-float Lriemann(float lower, float upper, float delta);
-void Get_input(int curRank, int numProcs, float* lower, float* upper);
+float Lriemann(float lower, float upper, float delta, int rectangles);
+void Get_input(int curRank, int numProcs, float* lower, float* upper, float* n);
 
 int main() {
-    int curRank, numProcs, n, ;
+    int curRank, numProcs, n;
     float lower = 0;
     float upper = 1800;
     float delta = 0.01;
