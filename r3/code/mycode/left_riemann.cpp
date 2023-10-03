@@ -37,6 +37,9 @@ int main() {
     float start = curRank * ratio;
     float end = start + ratio;
 
+    int numRect = (1 / ratio);
+    cout << "number of rectangles" << numRect << endl;
+
     float* results;
     area = Lriemann(start, end, delta);
 
@@ -60,8 +63,9 @@ int main() {
 float Lriemann(float lower, float upper, float delta) {
     static float result;
     float x = 0.0;
-    int newUp = (int)(upper - lower) / delta;
+    int newUp = (upper - lower) / delta;
     cout << "upper bound is: " << newUp << endl;
+    cout << "lower bound is: " << lower << endl;
 
     result = velocity(lower);
     // result[1] = acceleration(lower);
