@@ -109,5 +109,5 @@ void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n) {
 } /* Get_input */
 
 // these all return the respective attribute value using the antiderivative
-float acceleration(float time) { return (sin(time / TSCALE) * ASCALE); }     // returns acceleration at time t
-float velocity(float time) { return ((-cos(time / TSCALE) + 1) * VSCALE); }  // returns velocity at time t
+float acceleration(float time) { return ((float)sin(time / TSCALE) * ASCALE); }     // returns acceleration at time t
+float velocity(float time) { return (((float)-cos(time / TSCALE) + 1) * VSCALE); }  // returns velocity at time t
