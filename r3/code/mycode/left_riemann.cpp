@@ -17,7 +17,7 @@ float Lriemann(float lower, float upper, float delta);
 void Get_input(int curRank, int numProcs, float* lower, float* upper);
 
 int main() {
-    int curRank, numProcs;
+    int curRank, numProcs, n, ;
     float lower = 0;
     float upper = 1800;
     float delta = 0.01;
@@ -31,20 +31,14 @@ int main() {
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
     /* Find out how many processes are being used */
-    Get_input(curRank, numProcs, &lower, &upper);
+    Get_input(curRank, numProcs, &lower, &upper, &n);
 
-    float ratio = upper / numProcs;
-    float start = curRank * ratio;
-    float end = start + ratio;
-
-    cout << "upper/number procs = " << ratio << "\n"
-         << "start for proc " << curRank << " = " << start << "\n"
-         << "end for proc " << curRank << " = " << end << endl;
-    int numRect = (1 / ratio);
-    cout << "number of rectangles" << numRect << endl;
-
-    float* results;
-    area = Lriemann(start, end, delta);
+    float ratio = (upper - lower) / n;
+    float numBoxes = n / numProcs;
+    float start = lower + curRank * ratio;
+    float end = start + numBoxes * ratio;
+    // float* results;
+    area = Lriemann(start, end, delta, numBoxes);
 
     cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
          << endl;
@@ -63,36 +57,51 @@ int main() {
 }
 
 // left riemann
-float Lriemann(float lower, float upper, float delta) {
-    static float result;
-    float x = 0.0;
-    int newUp = (upper - lower) / delta;
+// float Lriemann(float lower, float upper, float delta, int quads) {
+//     static float result;
+//     float x = 0.0;
+//     int newUp = (upper - lower) / delta;
 
-    result = velocity(lower);
-    // result[1] = acceleration(lower);
-    for (int time = lower; time < newUp; time++) {
-        // cout << time << endl;
+//     result = velocity(lower);
+//     // result[1] = acceleration(lower);
+//     for (int time = lower; time < newUp; time++) {
+//         // cout << time << endl;
+//         x += delta;
+//         result += velocity(x);
+//         // result[1] += acceleration(x) * delta;
+//         // cout.precision(18);
+//         // cout << "time: " << x << ", position: " << result << endl;
+//     }
+//     // result *= delta;
+//     return result;
+// }
+
+float Lriemann(float lower, float upper, float delta, int rectangles) {
+    float lval, x, area = 0.0;
+    lval = velocity(lower);
+    x = lower;
+
+    for (int i = 1; i < rectangles; i++) {
+        area += lval;
         x += delta;
-        result += velocity(x);
-        // result[1] += acceleration(x) * delta;
-        // cout.precision(18);
-        // cout << "time: " << x << ", position: " << result << endl;
+        lval = velocity(x);
     }
-    // result *= delta;
-    return result;
+    area *= delta;
+    return area;
 }
 
-void Get_input(int curRank, int numProcs, float* lower, float* upper) {
+void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n) {
     int rc = 0;
 
     if (curRank == 0) {
-        printf("Enter a, b\n");
-        rc = scanf("%f %f", lower, upper);
+        printf("Enter a, b, n\n");
+        rc = scanf("%f %f", lower, upper, n);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
     MPI_Bcast(upper, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
-    // MPI_Bcast, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
 } /* Get_input */
 
 // these all return the respective attribute value using the antiderivative
