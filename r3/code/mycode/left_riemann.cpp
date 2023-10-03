@@ -32,7 +32,7 @@ int main() {
     /* Find out how many processes are being used */
     Get_input(curRank, numProcs, &lower, &upper, &n);
 
-    float step = (upper - lower) / n;
+    float step = 0.01;
     int numBoxes = n / numProcs;
     float increment = step * numBoxes;
     float start = lower + (curRank * increment);
