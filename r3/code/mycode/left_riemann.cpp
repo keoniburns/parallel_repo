@@ -37,11 +37,17 @@ int main() {
     float numBoxes = n / numProcs;
     float start = lower + curRank * ratio;
     float end = start + numBoxes * ratio;
-    // float* results;
-    area = Lriemann(start, end, delta, numBoxes);
 
-    cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
-         << endl;
+    printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
+           numBoxes, ratio);
+    // float* results;
+    area = Lriemann(start, end, ratio, numBoxes);
+
+    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area,
+           (ratio * numBoxes));
+
+    // cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
+    //      << endl;
 
     MPI_Reduce(&area, &total, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
