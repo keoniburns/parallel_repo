@@ -37,6 +37,9 @@ int main() {
     float start = curRank * ratio;
     float end = start + ratio;
 
+    cout << "upper/number procs = " << ratio << "\n"
+         << "start for proc " << curRank << " = " << start << "\n"
+         << "end for proc " << curRank << " = " << end << endl;
     int numRect = (1 / ratio);
     cout << "number of rectangles" << numRect << endl;
 
@@ -64,12 +67,11 @@ float Lriemann(float lower, float upper, float delta) {
     static float result;
     float x = 0.0;
     int newUp = (upper - lower) / delta;
-    cout << "upper bound is: " << newUp << endl;
-    cout << "lower bound is: " << lower << endl;
 
     result = velocity(lower);
     // result[1] = acceleration(lower);
     for (int time = lower; time < newUp; time++) {
+        cout << time << endl;
         x += delta;
         result += velocity(x);
         // result[1] += acceleration(x) * delta;
