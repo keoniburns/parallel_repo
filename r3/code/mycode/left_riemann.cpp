@@ -71,7 +71,7 @@ float Lriemann(float lower, float upper, float delta) {
     result = velocity(lower);
     // result[1] = acceleration(lower);
     for (int time = lower; time < newUp; time++) {
-        cout << time << endl;
+        // cout << time << endl;
         x += delta;
         result += velocity(x);
         // result[1] += acceleration(x) * delta;
