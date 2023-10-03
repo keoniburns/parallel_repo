@@ -35,7 +35,7 @@ int main() {
     float step = (upper - lower) / n;
     int numBoxes = n / numProcs;
     float start = lower + curRank * step;
-    float end = start + step;
+    float end = start + (step * numBoxes);
 
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
            numBoxes, step);
