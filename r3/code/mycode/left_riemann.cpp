@@ -87,11 +87,11 @@ float Lriemann(float lower, float upper, float delta, int rectangles) {
     x = lower;
 
     for (int i = 1; i < rectangles; i++) {
-        area += lval * delta;
+        area += lval;
         x += delta;
         lval = velocity(x);
     }
-
+    area *= delta;
     return area;
 }
 
