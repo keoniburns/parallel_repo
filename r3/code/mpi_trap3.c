@@ -83,7 +83,7 @@ int main(void) {
 
     /* Print the result */
     if (my_rank == 0) {
-        printf("With n = %d quadratures, our estimate\n", n);
+                printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", a, b, total_int_area);
     }
 
