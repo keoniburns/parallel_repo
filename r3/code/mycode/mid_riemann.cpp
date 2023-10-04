@@ -41,8 +41,8 @@ int main() {
     double time_taken;
     clock_gettime(CLOCK_MONOTONIC_RAW, &start_time);
 
-    // area = Mriemann(start, end, step, numBoxes);
-    area = trap(start, end, step, numBoxes);
+    area = Mriemann(start, end, step, numBoxes);
+    // area = trap(start, end, step, numBoxes);
     MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end_time);
