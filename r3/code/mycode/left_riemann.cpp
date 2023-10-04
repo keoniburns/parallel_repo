@@ -49,6 +49,8 @@ int main() {
     clock_gettime(CLOCK_MONOTONIC_RAW, &end_time);
     /* Print the result */
     if (curRank == 0) {
+        cout << "step size is : " << step << endl;
+
         printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
