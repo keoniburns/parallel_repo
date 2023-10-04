@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 using namespace std;
+
 // scale macros
 #define ASCALE 0.236589076381454
 #define TSCALE (1800.0 / (2.0 * M_PI))
@@ -12,97 +13,97 @@ using namespace std;
 // declare function protos
 double acceleration(double time);
 double velocity(double time);
-float* Lriemann(double lower, double upper, double delta);
-double* Mriemann(double lower, double upper, double delta);
-double* trap(double lower, double upper, double delta);
-void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p);
+// double Lriemann(double lower, double upper, double delta, int rectangles);
+double Mriemann(double, double, double, int);
+void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n);
 
 int main() {
-    // int curRank, numProcs, n = 1024;
-    double lower = 0;
-    double upper = 1800;
-    double delta = 0.01;
-    float* results;
-    double* Mresults;
-    results = Lriemann(lower, upper, delta);
+    int curRank, numProcs, n;
+    double lower, upper;
+    double area = 0, total = 0;
+    /* Let the system do what it needs to start up MPI */
+    MPI_Init(NULL, NULL);
 
-    Mresults = Mriemann(lower, upper, delta);
-    double* trapRes = trap(lower, upper, delta);
-    cout.precision(20);
-    cout << "The integral of f(x) from 0.0 to " << upper << " with " << delta << " n is " << results[0] << "\n"
-         << "the integral of acceleration from 0.0 to " << upper << " with " << delta << " n is " << results[1] << endl;
-    cout << "The integral of f(x) from 0.0 to " << upper << " using midpoint riemann with " << delta << " n is "
-         << Mresults[0] << "\n"
-         << "the integral of acceleration from 0.0 to " << upper << " using midpoint riemann with " << delta << " n is "
-         << Mresults[1] << endl;
-    cout << "The integral of f(x) from 0.0 to " << upper << " using trapezoidal riemann with " << delta << " n is "
-         << trapRes[0] << "\n"
-         << "the integral of acceleration from 0.0 to " << upper << " using trapezoidal riemann with " << delta
-         << " n is " << trapRes[1] << endl;
+    /* Get my process rank */
+    MPI_Comm_rank(MPI_COMM_WORLD, &curRank);
 
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
+
+    /* Find out how many processes are being used */
+    Get_input(curRank, numProcs, &lower, &upper, &n);
+
+    double step = (upper - lower) / n;
+    int numBoxes = n / numProcs;
+    int increment = step * numBoxes;
+    double start = lower + (curRank * increment);
+    double end = start + (increment);
+
+    printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
+           numBoxes, step);
+    // double* results;
+    area = Lriemann(start, end, step, numBoxes);
+
+    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
+
+    // cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
+    //      << endl;
+
+    MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    /* Print the result */
+    if (curRank == 0) {
+        printf("With n = %d quadratures, our estimate\n", n);
+        printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
+    }
+
+    /* Shut down MPI */
+    MPI_Finalize();
     return 0;
 }
 
-// left riemann
-float* Lriemann(double lower, double upper, double delta) {
-    static float result[2];  // res[0] = pos, res[1] = vel
-    double x = 0.0;
-    double newUp = upper / delta;
+double Mriemann(double lower, double upper, double delta, int rectangles) {
+    double lval, x, area = 0.0;
+    double midpoint = (double)(delta / 2);
+    x = lower;
+    lval = velocity(x + midpoint);
 
-    result[0] = velocity(lower);
-    result[1] = acceleration(lower);
-    for (int time = 1; time < newUp; time++) {
+    for (int i = 1; i < rectangles; i++) {
+        area += lval;
         x += delta;
-        result[0] += velocity(x);
-        result[1] += acceleration(x);
+        lval = velocity(x + midpoint);
     }
-    result[0] *= delta;
-    result[1] *= delta;
-    return result;
+    area *= delta;
+    return area;
 }
 
-// midpoint riemann sum
-double* Mriemann(double lower, double upper, double delta) {
-    double pos, vel;
-    static double result[2];
-    // double delta_ratio = (delta / 2);
-    double newUp = upper / delta;
-    // iterates using the step siae (delta) as the unit of incrementation
-    for (int time = 1; time < newUp; time++) {
-        double midpoint = (double)(time - delta);
-        pos = velocity(midpoint);
-        vel = acceleration(midpoint);
-        result[0] += pos;
-        result[1] += vel;
+double Lriemann(double lower, double upper, double delta, int rectangles) {
+    double lval, x, area = 0.0;
+    lval = velocity(lower);
+    x = lower;
+
+    for (int i = 1; i < rectangles; i++) {
+        area += lval;
+        x += delta;
+        lval = velocity(x);
     }
-    result[0] *= delta;
-    result[1] *= delta;
-    return result;
+    area *= delta;
+    return area;
 }
 
-// trapezoidal riemann
-double* trap(double lower, double upper, double delta) {
-    double pos, vel;
-    static double result[2];
-    double newUp = upper / delta;
-    // double pratio, vratio;
+void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n) {
+    int rc = 0;
 
-    // iterates using the step siae (delta) as the unit of incrementation
-    for (int time = 1; time < newUp; time++) {
-        pos = (velocity(time - 1) + velocity(time)) / 2.0;
-        vel = (acceleration(time - 1) + acceleration(time)) / 2.0;
-        result[0] += pos;
-        result[1] += vel;
+    if (curRank == 0) {
+        printf("Enter a, b, n\n");
+        rc = scanf("%f %f %d", lower, upper, n);
+        if (rc < 0) perror("Get_input");
     }
-    result[0] *= delta;
-    result[1] *= delta;
-    return result;
-}
+    MPI_Bcast(lower, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(upper, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(n, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-double f(double x, bool calcPos) {
-    if (calcPos) return (velocity(x));
-    return (acceleration(x));
-}
+} /* Get_input */
 
-double acceleration(double time) { return (sin(time / TSCALE) * ASCALE); }     // returns acceleration at time t
-double velocity(double time) { return ((-cos(time / TSCALE) + 1) * VSCALE); }  // returns velocity at time t
+// these all return the respective attribute value using the antiderivative
+double acceleration(double time) { return ((double)sin(time / TSCALE) * ASCALE); }  // returns acceleration at time t
+double velocity(double time) { return (((double)-cos(time / TSCALE) + 1) * VSCALE); }

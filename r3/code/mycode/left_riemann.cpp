@@ -39,13 +39,10 @@ int main() {
 
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
            numBoxes, step);
-    // float* results;
+
     area = Lriemann(start, end, step, numBoxes);
 
     printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
-
-    // cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
-    //      << endl;
 
     MPI_Reduce(&area, &total, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
@@ -59,26 +56,6 @@ int main() {
     MPI_Finalize();
     return 0;
 }
-
-// left riemann
-// float Lriemann(float lower, float upper, float delta, int quads) {
-//     static float result;
-//     float x = 0.0;
-//     int newUp = (upper - lower) / delta;
-
-//     result = velocity(lower);
-//     // result[1] = acceleration(lower);
-//     for (int time = lower; time < newUp; time++) {
-//         // cout << time << endl;
-//         x += delta;
-//         result += velocity(x);
-//         // result[1] += acceleration(x) * delta;
-//         // cout.precision(18);
-//         // cout << "time: " << x << ", position: " << result << endl;
-//     }
-//     // result *= delta;
-//     return result;
-// }
 
 float Lriemann(float lower, float upper, float delta, int rectangles) {
     float lval, x, area = 0.0;
