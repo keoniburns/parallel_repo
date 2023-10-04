@@ -84,14 +84,14 @@ float trap(float lower, float upper, float delta, int rectangle) {
     float left, right;
     left = lower;
     right = lower + delta;
-    val = (velocity(left) + velocity(right)) / 2.0;
-    // val = (acceleration(left) + acceleration(right)) / 2.0;
+    // val = (velocity(left) + velocity(right)) / 2.0;
+    val = (acceleration(left) + acceleration(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
         left += delta;
         right = lower + delta;
-        fx = ((velocity(left) + velocity(right)) / 2.0);
-        // fx = ((acceleration(left) + acceleration(right)) / 2.0);
+        // fx = ((velocity(left) + velocity(right)) / 2.0);
+        fx = ((acceleration(left) + acceleration(right)) / 2.0);
         val += fx;
     }
     val *= delta;
