@@ -60,12 +60,14 @@ int main() {
 float Lriemann(float lower, float upper, float delta, int rectangles) {
     float lval, x, area = 0.0;
     lval = velocity(lower);
+    // lval = acceleration(lower);
     x = lower;
 
     for (int i = 1; i < rectangles; i++) {
         area += lval;
         x += delta;
         lval = velocity(x);
+        // lval = acceleration(x);
     }
     area *= delta;
     return area;
@@ -77,11 +79,13 @@ float trap(float lower, float upper, float delta, int rectangle) {
     left = lower;
     right = lower + delta;
     val = (velocity(left) + velocity(right)) / 2.0;
+    // val = (acceleration(left) + acceleration(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
         left += delta;
         right = lower + delta;
         fx = ((velocity(left) + velocity(right)) / 2.0);
+        // fx = ((acceleration(left) + acceleration(right)) / 2.0);
         val += fx;
     }
     val *= delta;
