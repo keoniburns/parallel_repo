@@ -21,7 +21,7 @@ int main() {
     int curRank, numProcs, n;
     double lower, upper;
     double area = 0, total = 0;
-    struct timespec start, end;
+    struct timespec start_time, end_time;
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
 
@@ -39,21 +39,21 @@ int main() {
     double start = lower + (curRank * increment);
     double end = start + (increment);
     double time_taken;
-    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start_time);
 
     // area = Mriemann(start, end, step, numBoxes);
     // area = trap(start, end, step, numBoxes);
     MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end_time);
     /* Print the result */
     if (curRank == 0) {
         printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
-    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
-    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    time_taken = (end_time.tv_sec - start_time.tv_sec) * 1e9;
+    time_taken = (time_taken + (end_time.tv_nsec - start_time.tv_nsec)) * 1e-9;
     printf("time elapsed for program: %f\n", time_taken);
     /* Shut down MPI */
     MPI_Finalize();
