@@ -13,8 +13,9 @@ using namespace std;
 // declare function protos
 double acceleration(double time);
 double velocity(double time);
-// double Lriemann(double lower, double upper, double delta, int rectangles);
+double Lriemann(double lower, double upper, double delta, int rectangles);
 double Mriemann(double, double, double, int);
+double trap(double, double, double, int);
 void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n);
 
 int main() {
@@ -41,7 +42,8 @@ int main() {
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
            numBoxes, step);
     // double* results;
-    area = Mriemann(start, end, step, numBoxes);
+    // area = Mriemann(start, end, step, numBoxes);
+    area = trap(start, end, step, numBoxes);
 
     printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
 
@@ -70,7 +72,7 @@ double Mriemann(double lower, double upper, double delta, int rectangles) {
     for (int i = 1; i < rectangles; i++) {
         area += lval;
         x += delta;
-        lval = velocity(x + midpoint);
+        lval = acceleration(x + midpoint);
     }
     area *= delta;
     return area;
@@ -84,10 +86,25 @@ double Lriemann(double lower, double upper, double delta, int rectangles) {
     for (int i = 1; i < rectangles; i++) {
         area += lval;
         x += delta;
-        lval = velocity(x);
+        lval = acceleration(x);
     }
     area *= delta;
     return area;
+}
+
+double trap(double lower, double upper, double delta, int rectangle) {
+    double val, x, area = 0.0;
+    double left, right;
+    left = lower;
+    right = lower + delta;
+    val = (velocity(left) - velocity(right)) / 2.0;
+
+    for (int i = 1; i < rectangle; i++) {
+        x = left + (i * delta);
+        val += velocity(x);
+    }
+    val *= delta;
+    return delta;
 }
 
 void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n) {

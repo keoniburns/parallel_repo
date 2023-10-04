@@ -14,8 +14,8 @@ using namespace std;
 float acceleration(float time);
 float velocity(float time);
 float Lriemann(float lower, float upper, float delta, int rectangles);
+float trap(float, float, float, int);
 void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n);
-
 int main() {
     int curRank, numProcs, n;
     float lower, upper;
@@ -40,8 +40,8 @@ int main() {
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
            numBoxes, step);
 
-    area = Lriemann(start, end, step, numBoxes);
-
+    // area = Lriemann(start, end, step, numBoxes);
+    area = trap(start, end, step, numBoxes);
     printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
 
     MPI_Reduce(&area, &total, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -69,6 +69,21 @@ float Lriemann(float lower, float upper, float delta, int rectangles) {
     }
     area *= delta;
     return area;
+}
+
+float trap(float lower, float upper, float delta, int rectangle) {
+    float val, x, area = 0.0;
+    float left, right;
+    left = lower;
+    right = lower + delta;
+    val = (velocity(left) - velocity(right)) / 2.0;
+
+    for (int i = 1; i < rectangle; i++) {
+        x = left + (i * delta);
+        val += velocity(x);
+    }
+    val *= delta;
+    return delta;
 }
 
 void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n) {
