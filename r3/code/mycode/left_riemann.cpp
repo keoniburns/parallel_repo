@@ -16,10 +16,12 @@ float velocity(float time);
 float Lriemann(float lower, float upper, float delta, int rectangles);
 float trap(float, float, float, int);
 void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n);
+
 int main() {
     int curRank, numProcs, n;
     float lower, upper;
     float area = 0, total = 0;
+    struct timespec start, end;
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
 
@@ -36,22 +38,24 @@ int main() {
     int increment = step * numBoxes;
     float start = lower + (curRank * increment);
     float end = start + (increment);
+    double time_taken;
 
-    printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
-           numBoxes, step);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
     // area = Lriemann(start, end, step, numBoxes);
     area = trap(start, end, step, numBoxes);
-    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
-
     MPI_Reduce(&area, &total, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     /* Print the result */
     if (curRank == 0) {
         printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
+    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("time elapsed for program: %f\n", time_taken);
     /* Shut down MPI */
     MPI_Finalize();
     return 0;

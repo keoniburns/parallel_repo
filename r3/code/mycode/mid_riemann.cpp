@@ -13,7 +13,6 @@ using namespace std;
 // declare function protos
 double acceleration(double time);
 double velocity(double time);
-double Lriemann(double lower, double upper, double delta, int rectangles);
 double Mriemann(double, double, double, int);
 double trap(double, double, double, int);
 void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n);
@@ -22,6 +21,7 @@ int main() {
     int curRank, numProcs, n;
     double lower, upper;
     double area = 0, total = 0;
+    struct timespec start, end;
     /* Let the system do what it needs to start up MPI */
     MPI_Init(NULL, NULL);
 
@@ -38,26 +38,23 @@ int main() {
     int increment = step * numBoxes;
     double start = lower + (curRank * increment);
     double end = start + (increment);
+    double time_taken;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
-    printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
-           numBoxes, step);
-    // double* results;
     // area = Mriemann(start, end, step, numBoxes);
-    area = trap(start, end, step, numBoxes);
-
-    printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
-
-    // cout << "the area calculated from " << start << " to " << end << " for process " << curRank << " is: " << area
-    //      << endl;
-
+    // area = trap(start, end, step, numBoxes);
     MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     /* Print the result */
     if (curRank == 0) {
         printf("With n = %d quadratures, our estimate\n", n);
         printf("of the integral from %f to %f = %15.14lf\n", lower, upper, total);
     }
 
+    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("time elapsed for program: %f\n", time_taken);
     /* Shut down MPI */
     MPI_Finalize();
     return 0;
