@@ -83,7 +83,7 @@ double trap(double lower, double upper, double delta, int rectangle) {
     double val, x;
     double left, right;
     left = lower;
-    right = lower + delta;
+    right = upper;
     val = (velocity(left) + velocity(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
