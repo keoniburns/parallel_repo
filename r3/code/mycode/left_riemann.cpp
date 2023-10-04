@@ -72,18 +72,20 @@ float Lriemann(float lower, float upper, float delta, int rectangles) {
 }
 
 float trap(float lower, float upper, float delta, int rectangle) {
-    float val, x;
+    float val, fx;
     float left, right;
     left = lower;
     right = lower + delta;
-    val = (velocity(left) - velocity(right)) / 2.0;
+    val = (velocity(left) + velocity(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
-        x = left + (i * delta);
-        val += velocity(x);
+        left += delta;
+        right = lower + delta;
+        fx = ((velocity(left) + velocity(right)) / 2.0);
+        val += fx;
     }
     val *= delta;
-    return delta;
+    return val;
 }
 
 void Get_input(int curRank, int numProcs, float* lower, float* upper, int* n) {
