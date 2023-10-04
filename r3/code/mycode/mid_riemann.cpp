@@ -41,7 +41,7 @@ int main() {
     printf("my_rank=%d, start a=%lf, end b=%lf, number of quadratures = %d, step_size=%lf\n", curRank, start, end,
            numBoxes, step);
     // double* results;
-    area = Lriemann(start, end, step, numBoxes);
+    area = Mriemann(start, end, step, numBoxes);
 
     printf("my_rank=%d, integrated area = %lf, step_size * number quadratures=%lf\n", curRank, area, (step * numBoxes));
 
@@ -95,7 +95,7 @@ void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n) 
 
     if (curRank == 0) {
         printf("Enter a, b, n\n");
-        rc = scanf("%f %f %d", lower, upper, n);
+        rc = scanf("%lf %lf %d", lower, upper, n);
         if (rc < 0) perror("Get_input");
     }
     MPI_Bcast(lower, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
