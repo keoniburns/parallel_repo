@@ -93,7 +93,7 @@ double trap(double lower, double upper, double delta, int rectangle) {
         val += velocity(x);
     }
     val *= delta;
-    return delta;
+    return val;
 }
 
 void Get_input(int curRank, int numProcs, double* lower, double* upper, int* n) {
