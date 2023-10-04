@@ -65,13 +65,13 @@ double Mriemann(double lower, double upper, double delta, int rectangles) {
     double lval, x, area = 0.0;
     double midpoint = (double)(delta / 2);
     x = lower;
-    // lval = velocity(x + midpoint);
-    lval = acceleration(x + midpoint);
+    lval = velocity(x + midpoint);
+    // lval = acceleration(x + midpoint);
     for (int i = 1; i < rectangles; i++) {
         area += lval;
         x += delta;
-        // lval = velocity(x + midpoint);
-        lval = acceleration(x + midpoint);
+        lval = velocity(x + midpoint);
+        // lval = acceleration(x + midpoint);
     }
     area *= delta;
     return area;
