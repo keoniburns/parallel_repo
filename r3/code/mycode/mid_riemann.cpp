@@ -93,7 +93,7 @@ double Lriemann(double lower, double upper, double delta, int rectangles) {
 }
 
 double trap(double lower, double upper, double delta, int rectangle) {
-    double val, x, area = 0.0;
+    double val, x;
     double left, right;
     left = lower;
     right = lower + delta;

@@ -72,7 +72,7 @@ float Lriemann(float lower, float upper, float delta, int rectangles) {
 }
 
 float trap(float lower, float upper, float delta, int rectangle) {
-    float val, x, area = 0.0;
+    float val, x;
     float left, right;
     left = lower;
     right = lower + delta;
