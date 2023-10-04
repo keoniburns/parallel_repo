@@ -80,17 +80,17 @@ double Mriemann(double lower, double upper, double delta, int rectangles) {
 }
 
 double trap(double lower, double upper, double delta, int rectangle) {
-    double val, x;
+    double val, fx;
     double left, right;
     left = lower;
-    right = upper;
+    right = lower + delta;
     val = (velocity(left) + velocity(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
-        // left += delta;
-        // right = lower + delta;
-        x = left * (i * delta);
-        val += velocity(x);
+        left += delta;
+        right = lower + delta;
+        fx = ((velocity(left) + velocity(right)) / 2.0);
+        val += fx;
     }
     val *= delta;
     return val;
