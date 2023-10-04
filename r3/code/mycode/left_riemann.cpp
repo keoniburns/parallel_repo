@@ -40,7 +40,7 @@ int main() {
     float end = start + (increment);
     double time_taken;
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &star_time);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start_time);
 
     // area = Lriemann(start, end, step, numBoxes);
     area = trap(start, end, step, numBoxes);
