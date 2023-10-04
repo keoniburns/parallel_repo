@@ -41,8 +41,8 @@ int main() {
     double time_taken;
     clock_gettime(CLOCK_MONOTONIC_RAW, &start_time);
 
-    area = Mriemann(start, end, step, numBoxes);
-    // area = trap(start, end, step, numBoxes);
+    // area = Mriemann(start, end, step, numBoxes);
+    area = trap(start, end, step, numBoxes);
     MPI_Reduce(&area, &total, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &end_time);
@@ -82,14 +82,14 @@ double trap(double lower, double upper, double delta, int rectangle) {
     double left, right;
     left = lower;
     right = lower + delta;
-    val = (velocity(left) + velocity(right)) / 2.0;
-    // val = (acceleration(left) + acceleration(right)) / 2.0;
+    // val = (velocity(left) + velocity(right)) / 2.0;
+    val = (acceleration(left) + acceleration(right)) / 2.0;
 
     for (int i = 1; i < rectangle; i++) {
         left += delta;
         right = lower + delta;
-        fx = ((velocity(left) + velocity(right)) / 2.0);
-        // fx = (acceleration(left) + acceleration(right)) / 2.0;
+        // fx = ((velocity(left) + velocity(right)) / 2.0);
+        fx = (acceleration(left) + acceleration(right)) / 2.0;
 
         val += fx;
     }
