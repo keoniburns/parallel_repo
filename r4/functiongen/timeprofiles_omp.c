@@ -230,6 +230,7 @@ void main(int argc, char *argv[]) {
 
     printf("Train from table in %lf seconds with %d samples: final velocity = %lf, final position = %lf\n",
            (fend - fstart), tsize, VelProfile[tsize - 1], PosProfile[tsize - 1]);
+    return 0;
 }
 
 double Local_Riemann(double a, double b, int n, double funct(double)) {
@@ -376,6 +377,7 @@ double ex3_accel(double time) {
     if (time > 1700.0 && time <= 1800.0) {
         return ((peak_accel / 100.0) * (time - 1700.0));
     }
+    return 0;
 }
 
 double ex4_accel(double time) {
