@@ -45,7 +45,7 @@ double PosProfile[sizeof(DefaultProfile) / sizeof(double)];
 double Local_Riemann(double a, double b, int n, double func(double));
 double Local_Trap(double a, double b, int n, double func(double));
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     int idx;
     double time, dt = 1.0;  // dt=1.0 is the default to match spreadsheet
     int tsize = (int)(sizeof(DefaultProfile) / sizeof(double));
