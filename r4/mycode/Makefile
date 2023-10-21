@@ -8,12 +8,9 @@ MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS) $(CDEFS)
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 
 PRODUCT= ex1 exercise1 ex2 exercise2
-HFILES=
-CFILES=
-HPPFILES=
+MPIFILES= ex2.clean
 CPPFILES= exercise1.cpp exercise2.cpp
 CFILES= ex1.c ex2.c
-
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
 
