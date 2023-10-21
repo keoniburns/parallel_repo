@@ -72,7 +72,8 @@ int main(void) {
      * starts at: */
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
-    local_int = Trap(local_a, local_b, local_n, h);
+    local_int = LeftRiemann(local_a, local_b, local_n, h);
+    // local_int = Trap(local_a, local_b, local_n, h);
 
     /* Add up the integrals calculated by each process */
     MPI_Reduce(&local_int, &total_int, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
