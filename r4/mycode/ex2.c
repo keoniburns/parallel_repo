@@ -183,7 +183,7 @@ double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double
 
         // advance x by base length for new values to add to area
         x += base_len;
-        left_value = funct_to_integrate(x);
+        left_value = f(x);
     }
 
     return area;
