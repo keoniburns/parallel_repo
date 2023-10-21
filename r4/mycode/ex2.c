@@ -72,7 +72,8 @@ int main(void) {
      * starts at: */
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
-    local_int = LeftRiemann(local_a, local_b, local_n, h);
+    local_int = Simpson(local_a, local_b, local_n);
+    // local_int = LeftRiemann(local_a, local_b, local_n, h);
     // local_int = Trap(local_a, local_b, local_n, h);
 
     /* Add up the integrals calculated by each process */
@@ -189,6 +190,22 @@ double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double
     return area;
 
 } /*  LeftRiemann  */
+
+double Simpson(double left_endpt, double right_endpt, int rect_count) {
+    double h = (right_endpt - left_endpt) / rect_count;
+    double sum = f(left_endpt) + f(right_endpt);
+
+    for (int i = 1; i < rect_count; i++) {
+        double x = left_endpt + i * h;
+        if (i % 2 == 0) {
+            sum += 2 * f(x);
+        } else {
+            sum += 4 * f(x);
+        }
+    }
+
+    return (h / 3) * sum;
+}
 
 // table look-up for function profile given and velocity profile determined
 double table_function(int timeidx) {
