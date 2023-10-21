@@ -80,7 +80,7 @@ int main(void) {
     // printf("left Riemann\n");
     // local_int = LeftRiemann(local_a, local_b, local_n, h);
 
-    printf("trapezoidal riemann");
+    printf("trapezoidal riemann\n");
     local_int = Trap(local_a, local_b, local_n, h);
 
     /* Add up the integrals calculated by each process */

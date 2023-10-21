@@ -9,7 +9,7 @@ CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 
 PRODUCT= ex1 exercise1 ex2 exercise2
 MPIFILES= ex2.clean
-CPPFILES= exercise1.cpp exercise2.cpp
+CPPFILES= exercise1.cpp vanilla_ex2.cpp
 CFILES= ex1.c ex2.c
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
@@ -23,8 +23,8 @@ clean:
 exercise1: exercise1.cpp
 	$(CPP) $(CFLAGS2) -o $@ exercise1.cpp -lm
 
-# exercise2: exercise2.cpp
-# 	$(CPP) $(CFLAGS2) -o $@ exercise2.cpp -$(LIB_DIRS)
+vanilla_ex2: vanilla_ex2.cpp
+	$(CPP) $(CFLAGS2) -o $@ vanilla_ex2.cpp -lm
 
 ex1: ex1.c
 	$(CC) $(CFLAGS2) -o $@ ex1.c -lm
