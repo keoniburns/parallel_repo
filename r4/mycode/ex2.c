@@ -43,6 +43,7 @@ void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p);
 
 /* Calculate local integral  */
 double Trap(double left_endpt, double right_endpt, int trap_count, double base_len);
+double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double base_len);
 
 /* Function we're integrating */
 double f(double x);
@@ -166,6 +167,27 @@ double Trap(double left_endpt /* in */, double right_endpt /* in */, int trap_co
 
     return estimate;
 } /*  Trap  */
+
+double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double base_len) {
+    double left_value, x, area = 0.0;
+    int i;
+
+    // estimate of function on left side to forward integrate
+    x = left_endpt;
+    left_value = funct_to_integrate(x);
+
+    for (i = 1; i <= rect_count - 1; i++) {
+        // add area of each rectangle to overall area sum
+        area += left_value * base_len;
+
+        // advance x by base length for new values to add to area
+        x += base_len;
+        left_value = funct_to_integrate(x);
+    }
+
+    return area;
+
+} /*  LeftRiemann  */
 
 // table look-up for function profile given and velocity profile determined
 double table_function(int timeidx) {
