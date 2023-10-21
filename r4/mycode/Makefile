@@ -2,7 +2,7 @@ MPICC = mpicxx
 CPP = g++
 CC = gcc
 CFLAGS= -g -Wall $(INCLUDE_DIRS) $(CDEFS)
-MPIFLAGS= -g -Wall -00
+MPIFLAGS= -g -Wall -01
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 
 PRODUCT= ex1 exercise1 ex2 exercise2
