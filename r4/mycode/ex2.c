@@ -44,6 +44,7 @@ void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p);
 /* Calculate local integral  */
 double Trap(double left_endpt, double right_endpt, int trap_count, double base_len);
 double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double base_len);
+double Simpson(double left_endpt, double right_endpt, int rect_count);
 
 /* Function we're integrating */
 double f(double x);
