@@ -1,8 +1,10 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <iomanip>
 #include <iostream>
 
+using namespace std;
 // Define the function to be integrated (sin(x) in this case)
 double f(double x) { return sin(x); }
 
@@ -33,7 +35,7 @@ int main() {
     // Calculate the integral using the Left Riemann sum
     double integral = LeftRiemann(left_endpt, right_endpt, rect_count, base_len);
 
-    printf("The approximate integral of sin(x) from 0 to π is: %lf\n", integral);
+    cout << fixed << setprecision(14) << "The approximate integral of sin(x) from 0 to π is: " << integral << endl;
 
     return 0;
 }
