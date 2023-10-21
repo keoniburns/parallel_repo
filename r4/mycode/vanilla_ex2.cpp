@@ -27,9 +27,9 @@ double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double
 }
 
 int main() {
-    double left_endpt = 0.0;      // Left endpoint of the interval
-    double right_endpt = 1800;    // Right endpoint of the interval (π)
-    int rect_count = 1000000000;  // Number of rectangles for Riemann sum
+    double left_endpt = 0.0;       // Left endpoint of the interval
+    double right_endpt = 1800;     // Right endpoint of the interval (π)
+    int rect_count = 10000000000;  // Number of rectangles for Riemann sum
     double base_len = (right_endpt - left_endpt) / rect_count;
 
     // Calculate the integral using the Left Riemann sum
