@@ -242,7 +242,7 @@ double table_interp(double time) {
  */
 double f(double x /* in */) {
     // return x*x;
-    return sin(x);
+    return (sin(x));
 
     // replace this with linear interpolation of any function such as acceleration or velocity from a model
     // return table_interp(x);
