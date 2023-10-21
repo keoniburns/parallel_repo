@@ -28,4 +28,4 @@ ex1: ex1.c
 	$(CC) $(CFLAGS2) -o $@ ex1.c -lm
 
 ex2: ex2.c
-	$(MPICC) $(MPIFLAGSS) -o $@ ex2.c
+	$(MPICC) $(MPIFLAGS) -o $@ ex2.c
