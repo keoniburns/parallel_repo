@@ -175,7 +175,7 @@ double LeftRiemann(double left_endpt, double right_endpt, int rect_count, double
 
     // estimate of function on left side to forward integrate
     x = left_endpt;
-    left_value = funct_to_integrate(x);
+    left_value = f(x);
 
     for (i = 1; i <= rect_count - 1; i++) {
         // add area of each rectangle to overall area sum
