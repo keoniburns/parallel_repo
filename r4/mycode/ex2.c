@@ -77,11 +77,11 @@ int main(void) {
     // printf("simpsons rule\n");
     // local_int = Simpson(local_a, local_b, local_n);
 
-    // printf("left Riemann\n");
-    // local_int = LeftRiemann(local_a, local_b, local_n, h);
+    printf("left Riemann\n");
+    local_int = LeftRiemann(local_a, local_b, local_n, h);
 
-    printf("trapezoidal riemann\n");
-    local_int = Trap(local_a, local_b, local_n, h);
+    // printf("trapezoidal riemann\n");
+    // local_int = Trap(local_a, local_b, local_n, h);
 
     /* Add up the integrals calculated by each process */
     MPI_Reduce(&local_int, &total_int, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
