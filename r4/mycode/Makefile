@@ -7,7 +7,7 @@ CFLAGS= -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS)
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 
-PRODUCT= ex1 exercise1 ex2 exercise2
+PRODUCT= ex1 exercise1 ex2 vanilla_ex2
 MPIFILES= ex2.clean
 CPPFILES= exercise1.cpp vanilla_ex2.cpp
 CFILES= ex1.c ex2.c
