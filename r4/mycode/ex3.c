@@ -78,10 +78,11 @@ int main(void) {
         // Now sum up the values in the LUT function
         for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
             double interSum;
+            printf("idx: %d", idx);
             for (int start = idx; start < steps; start++) {
                 time = idx + (dt * (double)start);
                 printf("%015.14lf, %015.14lf\n", time, faccel(time));
-                // interSum += faccel(time);
+                interSum += faccel(time);
             }
             local_sum += interSum;
             default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
