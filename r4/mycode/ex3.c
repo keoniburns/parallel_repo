@@ -134,7 +134,7 @@ int main(void) {
         for (int idx = 0; idx < tablelen - 1; idx += 100)
             printf("t=%d: a=%lf for v=%lf\n", idx, DefaultProfile[idx], default_sum[idx]);
 #endif
-        printf("t=%d: a=%lf for v=%lf\n", tablelen - 2, DefaultProfile[tablelen - 2], default_sum[tablelen - 2]);
+        printf("t=%d: a=%lf for v=%lf\n", tablelen - 1, DefaultProfile[tablelen - 1], default_sum[tablelen - 1]);
     }
 
     // START PARALLEL PHASE 2: Now that all ranks have the new default_sum table, we can proceed to sum all of those
