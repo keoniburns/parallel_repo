@@ -48,7 +48,8 @@ int main(void) {
     int tablelen = sizeof(DefaultProfile) / sizeof(double);
     int subrange, residual;
     double time, dt;
-    dt = 1.0 / STEPS_PER_SEC;
+    int steps = STEPS_PER_SEC;
+    dt = 1.0 / steps;
 
     // Fill in default_sum array used to simulate a new table of values, such as
     // a velocity table derived by integrating acceleration
