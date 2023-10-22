@@ -81,7 +81,7 @@ int main(void) {
             for (int start = idx; start < steps; start++) {
                 time = idx + (dt * (double)start);
                 printf("%015.14lf, %015.14lf\n", time, faccel(time));
-                interSum += faccel(time);
+                // interSum += faccel(time);
             }
             local_sum += interSum;
             default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
