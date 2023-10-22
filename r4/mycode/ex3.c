@@ -32,6 +32,7 @@
 const int MAX_STRING = 100;
 double table_accel(int timeidx);
 double faccel(double time);
+#define STEPS_PER_SEC (10)
 
 int main(void) {
     char greeting[MAX_STRING];
@@ -46,6 +47,8 @@ int main(void) {
     double default_sum_of_sums[sizeof(DefaultProfile) / sizeof(double)];
     int tablelen = sizeof(DefaultProfile) / sizeof(double);
     int subrange, residual;
+    double time, dt;
+    dt = 1.0 / STEPS_PER_SEC;
 
     // Fill in default_sum array used to simulate a new table of values, such as
     // a velocity table derived by integrating acceleration
@@ -72,9 +75,13 @@ int main(void) {
         MPI_Get_processor_name(nodename, &namelen);
 
         // Now sum up the values in the LUT function
-        for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
-            local_sum += DefaultProfile[idx];
-            default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
+        // for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
+        //     local_sum += DefaultProfile[idx];
+        //     default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
+        // }
+        for (int idx = my_rank * subrange; idx < ((my_rank * subrange) + subrange) * STEPS_PER_SEC; idx++) {
+            time = 0.0 + (dt * (double)idx);
+            printf("%015.14lf, %015.14lf\n", time, faccel(time));
         }
 
         sprintf(greeting, "Sum of DefaultProfile for rank %d of %d on %s is %lf", my_rank, comm_sz, nodename,
