@@ -82,7 +82,8 @@ int main(void) {
         // }
 
         for (int idx = my_rank * subrange; idx <= ((my_rank * subrange) + subrange) * STEPS_PER_SEC; idx++) {
-            time = (my_rank * subrange) + (dt * (double)idx);
+            int start = my_rank * subrange;
+            time = start + (dt * (double)idx);
             printf("%015.14lf, %015.14lf\n", time, faccel(time));
         }
 
