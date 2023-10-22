@@ -7,10 +7,10 @@ CFLAGS= -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS)
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 
-PRODUCT= ex1 exercise1 ex2 vanilla_ex2
+PRODUCT= ex1 exercise1 ex2 vanilla_ex2 ex3
 # MPIFILES= ex2.c
 CPPFILES= exercise1.cpp vanilla_ex2.cpp
-CFILES= ex1.c ex2.c
+CFILES= ex1.c ex2.c ex3.c
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
 
@@ -31,3 +31,6 @@ ex1: ex1.c
 
 ex2: ex2.c
 	$(MPICC) $(MPIFLAGS) -o $@ ex2.c $(LIB_DIRS) -lm
+
+ex3: ex3.c 
+	$(MPICC) $(MPIFLAGS) -o $@ ex3.c $(LIB_DIRS) -lm
