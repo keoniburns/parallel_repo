@@ -106,7 +106,7 @@ int main(void) {
         //     default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
         // }
 
-        for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
+        for (int idx = 0; idx < subrange; idx++) {
             for (int timeidx = idx; timeidx < steps; timeidx++) {
                 time = timeidx + (dt * (double)idx);
                 printf("idx: %d, timeidx: %lf\n", idx, timeidx);
