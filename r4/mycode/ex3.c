@@ -78,9 +78,10 @@ int main(void) {
         // Now sum up the values in the LUT function
         for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
             double interSum;
-            printf("idx: %d", idx);
+            printf("idx: %d\n", idx);
             for (int start = idx; start < steps; start++) {
                 time = idx + (dt * (double)start);
+                printf("start: %lf\n", time);
                 printf("%015.14lf, %015.14lf\n", time, faccel(time));
                 interSum += faccel(time);
             }
