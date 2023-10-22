@@ -77,11 +77,11 @@ int main(void) {
     // printf("simpsons rule\n");
     // local_int = Simpson(local_a, local_b, local_n);
 
-    printf("left Riemann\n");
-    local_int = LeftRiemann(local_a, local_b, local_n, h);
+    // printf("left Riemann\n");
+    // local_int = LeftRiemann(local_a, local_b, local_n, h);
 
-    // printf("trapezoidal riemann\n");
-    // local_int = Trap(local_a, local_b, local_n, h);
+    printf("trapezoidal riemann\n");
+    local_int = Trap(local_a, local_b, local_n, h);
 
     // }
 
