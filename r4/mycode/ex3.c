@@ -76,10 +76,10 @@ int main(void) {
         MPI_Get_processor_name(nodename, &namelen);
 
         // Now sum up the values in the LUT function
-        for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
-            local_sum += DefaultProfile[idx];
-            default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
-        }
+        // for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
+        //     local_sum += DefaultProfile[idx];
+        //     default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
+        // }
         for (int idx = my_rank * subrange; idx < (my_rank * subrange) + subrange; idx++) {
             for (int timeidx = idx; timeidx < steps; timeidx++) {
                 time = timeidx + (dt * (double)idx);
