@@ -74,11 +74,11 @@ int main(void) {
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
     // if(my_rank == 0){
-    printf("simpsons rule\n");
-    local_int = Simpson(local_a, local_b, local_n);
+    // printf("simpsons rule\n");
+    // local_int = Simpson(local_a, local_b, local_n);
 
-    // printf("left Riemann\n");
-    // local_int = LeftRiemann(local_a, local_b, local_n, h);
+    printf("left Riemann\n");
+    local_int = LeftRiemann(local_a, local_b, local_n, h);
 
     // printf("trapezoidal riemann\n");
     // local_int = Trap(local_a, local_b, local_n, h);
