@@ -80,8 +80,9 @@ int main(void) {
         //     local_sum += DefaultProfile[idx];
         //     default_sum[idx] = local_sum;  // Each rank has it's own subset of the data
         // }
-        for (int idx = my_rank * subrange; idx < ((my_rank * subrange) + subrange) * STEPS_PER_SEC; idx++) {
-            time = 0.0 + (dt * (double)idx);
+
+        for (int idx = my_rank * subrange; idx <= ((my_rank * subrange) + subrange) * STEPS_PER_SEC; idx++) {
+            time = (my_rank * subrange) + (dt * (double)idx);
             printf("%015.14lf, %015.14lf\n", time, faccel(time));
         }
 
