@@ -82,7 +82,6 @@ int main(void) {
 
     // printf("trapezoidal riemann\n");
     // local_int = Trap(local_a, local_b, local_n, h);
-
     // }
 
     /* Add up the integrals calculated by each process */
