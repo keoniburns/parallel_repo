@@ -170,18 +170,18 @@ double Simpson(double left_endpt, double right_endpt, int rect_count) {
     return (h / 3) * sum;
 } /*  Simpsons  */
 
-// // table look-up for function profile given and velocity profile determined
-// double table_function(int timeidx) {
-//     long unsigned int tsize = sizeof(DefaultProfile) / sizeof(double);
+// table look-up for function profile given and velocity profile determined
+double table_function(int timeidx) {
+    long unsigned int tsize = sizeof(DefaultProfile) / sizeof(double);
 
-//     // Check array bounds for look-up table
-//     if (timeidx > tsize) {
-//         printf("timeidx=%d exceeds table size = %lu and range %d to %lu\n", timeidx, tsize, 0, tsize - 1);
-//         exit(-1);
-//     }
+    // Check array bounds for look-up table
+    if (timeidx > tsize) {
+        printf("timeidx=%d exceeds table size = %lu and range %d to %lu\n", timeidx, tsize, 0, tsize - 1);
+        exit(-1);
+    }
 
-//     return DefaultProfile[timeidx];
-// }
+    return DefaultProfile[timeidx];
+}
 
 double table_interp(double time) {
     int timeidx = (int)time;
