@@ -172,6 +172,13 @@ double Simpson(double left_endpt, double right_endpt, int rect_count) {
     return (h / 3) * sum;
 } /*  Simpsons  */
 
+double table_interp(double time) {
+    int timeidx = (int)time;
+    int timeidx_next = ((int)time) + 1;
+    double delta_t = time - (double)((int)time);
+
+    return (table_function(timeidx) + ((table_function(timeidx_next) - table_function(timeidx)) * delta_t));
+}
 // table look-up for function profile given and velocity profile determined
 double table_function(int timeidx) {
     long unsigned int tsize = sizeof(DefaultProfile) / sizeof(double);
@@ -183,14 +190,6 @@ double table_function(int timeidx) {
     }
 
     return DefaultProfile[timeidx];
-}
-
-double table_interp(double time) {
-    int timeidx = (int)time;
-    int timeidx_next = ((int)time) + 1;
-    double delta_t = time - (double)((int)time);
-
-    return (table_function(timeidx) + ((table_function(timeidx_next) - table_function(timeidx)) * delta_t));
 }
 
 // x is the time
