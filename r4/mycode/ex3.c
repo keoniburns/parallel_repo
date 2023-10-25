@@ -20,6 +20,8 @@
 // io and mesasage passing protos
 void Build_mpi_type(double* a_p, double* b_p, int* n_p, MPI_Datatype* input_mpi_t_p);
 void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p);
+double table_interp(double time);
+double table_function(int timeidx);
 
 // integral function protos
 double Trap(double left_endpt, double right_endpt, int trap_count, double base_len);
