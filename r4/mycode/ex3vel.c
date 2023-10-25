@@ -56,11 +56,13 @@ int main(void) {
      * starts at: */
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
-
     double dt = (local_b - local_a) / local_n;
-    printf("delta t: %lf\n", dt);
 
-    printf("simpsons rule\n");
+    if (my_rank == 0) {
+        printf("delta t: %lf\n", dt);
+    }
+
+    // printf("simpsons rule\n");
     local_int = Simpson(local_a, local_b, local_n);
 
     /* Add up the integrals calculated by each process */
