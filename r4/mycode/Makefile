@@ -35,7 +35,7 @@ ex2: ex2.c
 ex3vel: ex3vel.c 
 	$(MPICC) $(MPIFLAGS) -o $@ ex3vel.c $(LIB_DIRS) -lm
 
-ex3acc: ex3.c 
+ex3acc: ex3acc.c 
 	$(MPICC) $(MPIFLAGS) -o $@ ex3acc.c $(LIB_DIRS) -lm
 
 timeinterp: timeinterp.c
