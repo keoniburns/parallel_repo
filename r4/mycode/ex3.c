@@ -55,7 +55,7 @@ int main(void) {
      * starts at: */
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
-    printf("delta t: %lf", (1.0 / h));
+    printf("delta t: %lf\n", (h / local_n));
 
     printf("simpsons rule\n");
     local_int = Simpson(local_a, local_b, local_n);
