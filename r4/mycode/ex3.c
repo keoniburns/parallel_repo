@@ -1,5 +1,5 @@
 /**
- * @file ex2.c
+ * @file ex3.c
  * @author Keoni Burns
  * @brief implements left Riemann, Trapezoidal, and Simpsons to find the integral of sin
  * adapted from mpi_trap.4 provided by profssor Sam Siewert
@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "ex4accel.h"
-#include "ex4vel.h"
+#include "ex4accel.h"
+// #include "ex4vel.h"
 
 // io and mesasage passing protos
 void Build_mpi_type(double* a_p, double* b_p, int* n_p, MPI_Datatype* input_mpi_t_p);
@@ -58,12 +58,6 @@ int main(void) {
 
     printf("simpsons rule\n");
     local_int = Simpson(local_a, local_b, local_n);
-
-    // printf("left Riemann\n");
-    // local_int = LeftRiemann(local_a, local_b, local_n, h);
-
-    // printf("trapezoidal riemann\n");
-    // local_int = Trap(local_a, local_b, local_n, h);
 
     /* Add up the integrals calculated by each process */
     MPI_Reduce(&local_int, &total_int, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -176,6 +170,7 @@ double table_interp(double time) {
     int timeidx = (int)time;
     int timeidx_next = ((int)time) + 1;
     double delta_t = time - (double)((int)time);
+    printf("delta t: %lf\n", delta_t);
 
     return (table_function(timeidx) + ((table_function(timeidx_next) - table_function(timeidx)) * delta_t));
 }
