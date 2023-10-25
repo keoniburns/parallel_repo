@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "ex4accel.h"
+#include "ex4accel.h"
 // #include "ex4vel.h"
 
 // io and mesasage passing protos
