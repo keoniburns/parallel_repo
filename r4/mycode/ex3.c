@@ -170,7 +170,7 @@ double table_interp(double time) {
     int timeidx = (int)time;
     int timeidx_next = ((int)time) + 1;
     double delta_t = time - (double)((int)time);
-    printf("delta t: %lf\n", delta_t);
+    // printf("delta t: %lf\n", delta_t);
 
     return (table_function(timeidx) + ((table_function(timeidx_next) - table_function(timeidx)) * delta_t));
 }
