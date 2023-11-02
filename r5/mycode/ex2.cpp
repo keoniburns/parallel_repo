@@ -25,8 +25,7 @@ int main(int argc, char *argv[]) {
         threads = atoi(argv[2]);
     }
 
-#pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : first_sum) reduction(+ : sec_sum) private(i) \
-    shared(length)
+#pragma omp parallel for num_threads(threads) reduction(+ : first_sum) reduction(+ : sec_sum) private(i) shared(length)
     for (i = 0; i < length; i++) {
         if (i % 2 == 0) {
             first_sum += constant / ((2.0 * (double)i) + 1.0);
