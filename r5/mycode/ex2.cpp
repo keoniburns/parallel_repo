@@ -6,7 +6,7 @@
 
 #include <iostream>
 #define PI (3.14159265358979323846)
-#define NUM_THREADS (10)
+#define NUM_THREADS (8)
 using namespace std;
 int main(int argc, char *argv[]) {
     double first_sum = 0.0, sec_sum = 0.0;
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
         length = atoi(argv[1]);
     }
 
-#pragma omp parallel for num_threads()
+#pragma omp parallel for num_threads(NUM_THREADS)
     for (i = 0; i < length; i++) {
         first_sum += constant / ((2.0 * (double)i) + 1.0);
         sec_sum += 2.0 / (((4.0 * (double)i) + 1.0) * (4.0 * (double)i + 3.0));
