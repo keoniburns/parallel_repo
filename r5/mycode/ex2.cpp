@@ -6,19 +6,23 @@
 
 #include <iostream>
 #define PI (3.14159265358979323846)
-#define NUM_THREADS (8)
+// #define NUM_THREADS (8)
 using namespace std;
 int main(int argc, char *argv[]) {
     double first_sum = 0.0, sec_sum = 0.0;
     unsigned int length = 0;
     double constant = 1.0;
     int i = 0;
+    int threads = 4;  // for default
 
     if (argc < 2) {
-        cerr << "usage: ./ex2 <number of iterations, n>" << endl;
+        cerr << "usage: ./ex2 <number of iterations, n> <number of threads>" << endl;
         exit(-1);
     } else {
         length = atoi(argv[1]);
+    }
+    if (argc == 3) {
+        threads = atoi(argv[2]);
     }
 
 #pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : first_sum) reduction(+ : sec_sum) private(i) \
