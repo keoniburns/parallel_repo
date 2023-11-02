@@ -21,12 +21,15 @@ int main(int argc, char *argv[]) {
         length = atoi(argv[1]);
     }
 
-#pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : first_sum) reduction(+ : sec_sum) private(i, factor) \
+#pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : first_sum) reduction(+ : sec_sum) private(i, constant) \
     shared(length)
     for (i = 0; i < length; i++) {
-        first_sum += constant / ((2.0 * (double)i) + 1.0);
+        if (i % 2 == 0) {
+            first_sum += constant / ((2.0 * (double)i) + 1.0);
+        } else {
+            first_sum += -constant / ((2.0 * (double)i) + 1.0);
+        }
         sec_sum += 2.0 / (((4.0 * (double)i) + 1.0) * (4.0 * (double)i + 3.0));
-        constant = -constant;
     }
     double Merr = 1000000000.0 * ((M_PI - (4.0 * first_sum)));
     double Eerr = 1000000000.0 * ((M_PI - (4.0 * sec_sum)));
