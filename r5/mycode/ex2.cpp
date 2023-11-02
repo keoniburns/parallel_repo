@@ -21,7 +21,8 @@ int main(int argc, char *argv[]) {
         length = atoi(argv[1]);
     }
 
-#pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : sum) private(k, factor) shared(n)
+#pragma omp parallel for num_threads(NUM_THREADS) reduction(+ : first_sum) reduction(+ : sec_sum) private(k, factor) \
+    shared(length)
     for (i = 0; i < length; i++) {
         first_sum += constant / ((2.0 * (double)i) + 1.0);
         sec_sum += 2.0 / (((4.0 * (double)i) + 1.0) * (4.0 * (double)i + 3.0));
