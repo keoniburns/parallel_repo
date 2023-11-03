@@ -1,14 +1,14 @@
 import random
 
-n = 100  # Number of rows
-m = 100  # Number of columns
-nn = 100
-mm = 100
-file_name = "100_both.dat"
+n = 1000  # Number of rows
+m = 1000  # Number of columns
+nn = 1000
+mm = 500
+file_name = "1000x500.dat"
 
 
 def generate_random_numbers(n, m):
-    data = [[random.randint(1, 100) for _ in range(m)] for _ in range(n)]
+    data = [[random.randint(1, 9) for _ in range(m)] for _ in range(n)]
     return data
 
 
@@ -17,7 +17,7 @@ def save_to_dat_file(data, filename):
         for row in data:
             line = " ".join(map(str, row))
             file.write(line + "\n")
-        file.write("\n")  # Add an empty line to separate the matrices
+        # file.write("\n")  # Add an empty line to separate the matrices
 
 
 if __name__ == "__main__":
