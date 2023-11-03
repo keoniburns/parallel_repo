@@ -135,7 +135,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     // unsigned long int itrs = A.n * B.m * A.m;
     // unsigned long int row, col;
 
-#pragma omp parallel for num_threads(threads) collapse(3)
+#pragma omp parallel for num_threads(threads)
     for (unsigned long int i = 0; i < A.n; i++) {
         for (unsigned long int j = 0; j < B.m; j++) {
             for (unsigned long int k = 0; k < A.m; k++) {
