@@ -1,10 +1,10 @@
 import random
 
-n = 100  # Number of rows
-m = 100  # Number of columns
-nn = 100
+n = 50  # Number of rows
+m = 50  # Number of columns
+nn = 50
 mm = 50
-file_name = "100x50.dat"
+file_name = "50x50.dat"
 
 
 def generate_random_numbers(n, m):
