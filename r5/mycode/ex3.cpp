@@ -14,7 +14,7 @@
 using namespace std;
 
 struct matrix_data {
-    int n, m;  // dimensions of the matrix
+    unsigned long int n, m;  // dimensions of the matrix
     vector<vector<double>> matrix;
 };
 
@@ -132,8 +132,8 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.n = A.n;
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
-    unsigned long int itrs = A.n * B.m * A.m;
-    unsigned long int row, col;
+    // unsigned long int itrs = A.n * B.m * A.m;
+    // unsigned long int row, col;
 
 #pragma omp parallel for num_threads(threads) collapse(2)
     for (unsigned long int i = 0; i < A.n; i++) {
