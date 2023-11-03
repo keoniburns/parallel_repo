@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     double first_sum = 0.0, sec_sum = 0.0;
     unsigned int length = 0;
     double constant = 1.0;
-    int i = 0;
+    unsigned int i = 0;
     int threads = 4;  // for default
 
     if (argc < 2) {
@@ -54,3 +54,4 @@ int main(int argc, char *argv[]) {
     cout << "\n\n"
          << "monotonic time: " << (fstop - fstart) << endl;
     return 0;
+}
