@@ -45,20 +45,23 @@ int main(int argc, char *argv[]) {
     total_itr = A.n * B.m * A.m;
     cout << "total number of iterations is: " << total_itr << endl;
     multiplication(A, B, C);
-    // for (int i = 0; i < A.n; i++) {
-    //     for (int j = 0; j < A.m; j++) {
-    //         cout << A.matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-    // cout << endl;
 
-    // for (int i = 0; i < B.n; i++) {
-    //     for (int j = 0; j < B.m; j++) {
-    //         cout << B.matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
+    cout << "Matrix A: " << endl;
+    for (int i = 0; i < A.n; i++) {
+        for (int j = 0; j < A.m; j++) {
+            cout << A.matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "Matrix B: " << endl;
+    for (int i = 0; i < B.n; i++) {
+        for (int j = 0; j < B.m; j++) {
+            cout << B.matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
     for (unsigned long int i = 0; i < C.n; i++) {
         for (unsigned long int j = 0; j < C.m; j++) {
             cout << C.matrix[i][j] << " ";
@@ -135,7 +138,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     // unsigned long int itrs = A.n * B.m * A.m;
     // unsigned long int row, col;
 
-#pragma omp parallel for num_threads(threads)
+#pragma omp parallel for num_threads(threads) collapse(3)
     for (unsigned long int i = 0; i < A.n; i++) {
         for (unsigned long int j = 0; j < B.m; j++) {
             for (unsigned long int k = 0; k < A.m; k++) {
