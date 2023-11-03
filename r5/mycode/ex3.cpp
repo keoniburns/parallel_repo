@@ -9,6 +9,8 @@
 #include <sstream>
 #include <vector>
 
+#define threads (8)
+
 using namespace std;
 
 struct matrix_data {
@@ -106,7 +108,7 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
 
     B.matrix.resize(B.n, vector<double>(B.m));
 
-    // #pragma omp parallel for num_threads(threads)
+#pragma omp parallel for num_threads(threads) collapse(2)
     for (int i = 0; i < A.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
@@ -115,7 +117,7 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
         }
     }
 
-    // #pragma omp parallel for num_threads(threads)
+#pragma omp parallel for num_threads(threads) collapse(2)
     for (int i = 0; i < B.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
@@ -133,7 +135,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     int itrs = A.n * B.m * A.m;
     int row, col;
 
-    // #pragma omp parallel for num_threads(threads) collapse(3)
+#pragma omp parallel for num_threads(threads) collapse(3)
     for (int i = 0; i < A.n; i++) {
         for (int j = 0; j < B.m; j++) {
             for (int k = 0; k < A.m; k++) {
