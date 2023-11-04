@@ -8,10 +8,10 @@ MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS)
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 OMPFLAGS = -g -Wall 
 
-PRODUCT= ex2 ex3
+PRODUCT= ex2 ex3 gewpp
 # MPIFILES= ex2.c
 CPPFILES= ex2.cpp ex3.cpp
-CFILES= 
+CFILES= gewpp.c
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
 
@@ -26,6 +26,9 @@ ex2: ex2.cpp
 
 ex3: ex3.cpp
 	$(CPP) $(OMPFLAGS) -o $@ ex3.cpp -fopenmp
+
+gewpp: gewpp.c
+	$(CC) $(CFLAGS2) -o $@ gewpp.c
 
 
 
