@@ -197,7 +197,7 @@ int forwardStep(matrix_data &A, int &flag) {
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
 
-#pragma omp parallel for
+#pragma omp parallel for num_threads(THREADS)
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
@@ -206,7 +206,6 @@ void substitution(matrix_data &A) {
         sol[i] = sol[i] / A.matrix[i][i];
     }
     cout << "solution is: " << endl;
-#pragma omp single
     for (int i = 0; i < A.n; i++) {
         cout << sol[i] << endl;
     }
