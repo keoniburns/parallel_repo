@@ -219,8 +219,8 @@ int forwardStep(matrix_data &A) {
 
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
-    for (int i = A.m - 1; i >= 0; i--) {
-        sol[i] = A.matrix[i][A.m];
+    for (int i = A.n - 1; i >= 0; i--) {
+        sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
             sol[i] -= A.matrix[i][j] * sol[j];
         }
