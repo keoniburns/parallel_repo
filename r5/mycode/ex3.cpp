@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
     total_itr = A.n * B.m * A.m;
-    cout << "total number of iterations is: " << total_itr << endl;
+    // cout << "total number of iterations is: " << total_itr << endl;
     multiplication(A, B, C);
 
     // cout << "Matrix A: " << endl;
