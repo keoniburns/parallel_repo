@@ -19,16 +19,16 @@ using namespace std;
 struct matrix_data {
     int n;  // dimensions of the matrix
     int m;
-    vector<vector<double>> matrix;
+    vector<vector<double> > matrix;
 };
 
 void multiplication(matrix_data A, matrix_data B, matrix_data &C);
-void read_input(matrix_data &A, matrix_data &B, string filename);
+void read_input(matrix_data &A, string filename);
 // void matrixPrint(matrix_data &A);
 void rowSwap(matrix_data &A, int n, int m);
 int forwardStep(matrix_data &A);
 void substitution(matrix_data &A);
-int gauss(matrix_data &A);
+void gauss(matrix_data &A);
 
 int main(int argc, char *argv[]) {
     // int total_itr = 0;
@@ -45,17 +45,24 @@ int main(int argc, char *argv[]) {
         // threads = argv[2];
     }
 
-    read_input(A, RHS, filename);
+    read_input(A, filename);
 
-    Ai.n = A.n;
-    Ai.m = A.m;
-    Ai.matrix = A.matrix;
+    // Ai.n = A.n;
+    // Ai.m = A.m;
+    // Ai.matrix = A.matrix;
 
-    cout << "A num cols: " << A.m << "\nB num rows: " << RHS.n << endl;
-    if (A.m != RHS.n) {
-        cerr << "this math isn't mathing.\nA must have the same number of columns as B does rows" << endl;
-        exit(-1);
+    cout << "A num rows: " << A.n << "\nA num cols: " << A.m << endl;
+
+    cout << "Matrix A: " << endl;
+    for (int i = 0; i < A.n; i++) {
+        for (int j = 0; j < A.m; j++) {
+            cout << A.matrix[i][j] << " ";
+        }
+        cout << endl;
     }
+    cout << endl;
+
+    gauss(A);
     // total_itr = A.n * B.m * A.m;
     // cout << "total number of iterations is: " << total_itr << endl;
 
@@ -67,15 +74,6 @@ int main(int argc, char *argv[]) {
     // time_taken = (end.tv_sec - start.tv_sec) * 1e9;
     // time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
     // cout << "time for multiplication: " << time_taken << endl;
-
-    // cout << "Matrix A: " << endl;
-    // for (int i = 0; i < A.n; i++) {
-    //     for (int j = 0; j < A.m; j++) {
-    //         cout << A.matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-    // cout << endl;
 
     // cout << "Matrix B: " << endl;
     // for (int i = 0; i < B.n; i++) {
@@ -105,7 +103,7 @@ int main(int argc, char *argv[]) {
  * @param B (matrix struct)
  * @param filename
  */
-void read_input(matrix_data &A, matrix_data &B, string filename) {
+void read_input(matrix_data &A, string filename) {
     ifstream infile(filename, ios::in);
     if (!infile.is_open()) {
         cerr << "cannot open file: " << filename << endl;
@@ -125,33 +123,12 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
 
     A.matrix.resize(A.n, vector<double>(A.m));  // resizing for given dimensions from .dat file
 
-    /* grabbing the line that holds the NxM dimensions for B */
-    if (!getline(infile, line)) {
-        cerr << "can't grab second line" << endl;
-    }
-
-    istringstream bDims(line);
-    if (!(bDims >> B.n >> B.m)) {
-        cerr << "cant grab dims for B" << endl;
-    }
-
-    B.matrix.resize(B.n, vector<double>(B.m));
-
     // #pragma omp parallel for num_threads(threads)
     for (int i = 0; i < A.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
         for (int j = 0; j < A.m; j++) {
             coefficients >> A.matrix[i][j];
-        }
-    }
-
-    // #pragma omp parallel for num_threads(threads)
-    for (int i = 0; i < B.n; i++) {
-        getline(infile, line);
-        istringstream coefficients(line);
-        for (int j = 0; j < B.m; j++) {
-            coefficients >> B.matrix[i][j];
         }
     }
 }
@@ -193,7 +170,7 @@ void rowSwap(matrix_data &A, int n, int m) {
 }
 
 // this only works for matrixes with dimensions NxN
-int gauss(matrix_data &A) {
+void gauss(matrix_data &A) {
     int flag = forwardStep(A);
     if (flag != 0 && A.matrix[flag][A.m]) {
         cerr << "inconsistent system" << endl;
