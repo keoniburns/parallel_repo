@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     matrix_data A;
     matrix_data B;
     matrix_data C;
-    timespec start, end;
+    struct timespec start, end;
 
     if (argc == 1) {
         cerr << "this cannot be done yet please include data file with ./ex2" << endl;
