@@ -140,7 +140,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
 
-#pragma omp parallel for num_threads(threads) collapse(3)
+    // #pragma omp parallel for num_threads(threads) collapse(3)
     for (unsigned long int i = 0; i < A.n; i++) {
         for (unsigned long int j = 0; j < B.m; j++) {
             for (unsigned long int k = 0; k < A.m; k++) {
