@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -16,20 +17,23 @@
 using namespace std;
 
 struct matrix_data {
-    int n, m;  // dimensions of the matrix
+    int n;  // dimensions of the matrix
+    int m;
     vector<vector<double>> matrix;
 };
 
 void multiplication(matrix_data A, matrix_data B, matrix_data &C);
 void read_input(matrix_data &A, matrix_data &B, string filename);
+// void matrixPrint(matrix_data &A);
+void rowSwap(matrix_data &A, int n, int m);
+int forwardStep(matrix_data &A);
+void substitution(matrix_data &A);
+int gauss(matrix_data &A);
 
 int main(int argc, char *argv[]) {
     // int total_itr = 0;
     string filename;
     matrix_data A;
-    matrix_data Ai;
-    matrix_data RHS;
-    matrix_data sol;
     timespec start, end;
     int threads = THREADS;
 
@@ -55,14 +59,14 @@ int main(int argc, char *argv[]) {
     // total_itr = A.n * B.m * A.m;
     // cout << "total number of iterations is: " << total_itr << endl;
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    multiplication(A, RHS, sol);
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    // clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    // multiplication(A, RHS, sol);
+    // clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
-    double time_taken;
-    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
-    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-    cout << "time for multiplication: " << time_taken << endl;
+    // double time_taken;
+    // time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    // time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    // cout << "time for multiplication: " << time_taken << endl;
 
     // cout << "Matrix A: " << endl;
     // for (int i = 0; i < A.n; i++) {
@@ -158,7 +162,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
 
-#pragma omp parallel for num_threads(THREADS) collapse(3)
+    // #pragma omp parallel for num_threads(THREADS) collapse(3)
     for (int i = 0; i < A.n; i++) {
         for (int j = 0; j < B.m; j++) {
             for (int k = 0; k < A.m; k++) {
@@ -177,5 +181,76 @@ void invert(matrix_data A, matrix_data &Ainvert) {
                 Ainvert.matrix[i][j] = 1 / A.matrix[i][j];
             }
         }
+    }
+}
+
+void rowSwap(matrix_data &A, int n, int m) {
+    for (int i = 0; i <= A.n; i++) {  // iterate through the rows
+        double tmp = A.matrix[n][i];  // tmp to hold initial row val
+        A.matrix[n][m] = A.matrix[m][i];
+        A.matrix[m][i] = tmp;
+    }
+}
+
+// this only works for matrixes with dimensions NxN
+int gauss(matrix_data &A) {
+    int flag = forwardStep(A);
+    if (flag != 0 && A.matrix[flag][A.m]) {
+        cerr << "inconsistent system" << endl;
+    } else if (flag != 0) {
+        cout << "infinite solutions" << endl;
+        return;
+    }
+
+    substitution(A);
+}
+
+int forwardStep(matrix_data &A) {
+    double maxVal;
+    int maxPos;
+
+    for (int k = 0; k < A.n; k++) {
+        maxPos = k;                    // init current max
+        maxVal = A.matrix[maxPos][k];  // grab value
+
+        for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
+            if (abs(A.matrix[i][k]) > maxVal) {
+                maxVal = A.matrix[i][k];
+            }
+
+            // look if the diagonal is 0
+            // this implies that the matrix is singular
+            if (!A.matrix[k][maxPos]) {
+                return k;
+            }
+
+            if (maxPos != k) {
+                rowSwap(A, k, maxPos);
+            }
+
+            for (int i = k + 1; i < A.n; i++) {
+                double reduce = A.matrix[i][k] / A.matrix[k][k];
+                for (int j = k + 1; j < A.n; j++) {
+                    A.matrix[i][j] -= (A.matrix[k][j] * reduce);
+                }
+                A.matrix[i][k] = 0;
+            }
+        }
+    }
+    return 0;
+}
+
+void substitution(matrix_data &A) {
+    vector<double> sol(A.n);
+    for (int i = A.m - 1; i >= 0; i--) {
+        sol[i] = A.matrix[i][A.m];
+        for (int j = i + 1; j < A.m; j++) {
+            sol[i] -= A.matrix[i][j] * sol[j];
+        }
+        sol[i] = sol[i] / A.matrix[i][i];
+    }
+    cout << "solution is: " << endl;
+    for (int i = 0; i < A.m; i++) {
+        cout << sol[i] << endl;
     }
 }
