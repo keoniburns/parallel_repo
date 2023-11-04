@@ -25,7 +25,7 @@ struct matrix_data {
 void read_input(matrix_data &A, string filename);
 // void matrixPrint(matrix_data &A);
 void rowSwap(matrix_data &A, int n, int m);
-int forwardStep(matrix_data &A);
+int forwardStep(matrix_data &A, int &flag);
 void substitution(matrix_data &A);
 void gauss(matrix_data &A);
 
@@ -144,7 +144,8 @@ void rowSwap(matrix_data &A, int n, int m) {
 
 // this only works for matrixes with dimensions NxN
 void gauss(matrix_data &A) {
-    int flag = forwardStep(A);
+    int flag;
+    forwardStep(A, flag);
     if (flag != 0 && A.matrix[flag][A.m]) {
         cerr << "inconsistent system" << endl;
     } else if (flag != 0) {
@@ -155,7 +156,7 @@ void gauss(matrix_data &A) {
     substitution(A);
 }
 
-int forwardStep(matrix_data &A) {
+int forwardStep(matrix_data &A, int &flag) {
     double maxVal;
     int maxPos;
 
@@ -174,7 +175,7 @@ int forwardStep(matrix_data &A) {
 #pragma omp critical
             {
                 if (!A.matrix[k][maxPos]) {
-                    return k;
+                    flag = k;
                 }
 
                 if (maxPos != k) {
