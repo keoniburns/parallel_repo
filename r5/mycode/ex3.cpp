@@ -46,23 +46,23 @@ int main(int argc, char *argv[]) {
     cout << "total number of iterations is: " << total_itr << endl;
     multiplication(A, B, C);
 
-    cout << "Matrix A: " << endl;
-    for (unsigned long int i = 0; i < A.n; i++) {
-        for (unsigned long int j = 0; j < A.m; j++) {
-            cout << A.matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    // cout << "Matrix A: " << endl;
+    // for (unsigned long int i = 0; i < A.n; i++) {
+    //     for (unsigned long int j = 0; j < A.m; j++) {
+    //         cout << A.matrix[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << endl;
 
-    cout << "Matrix B: " << endl;
-    for (unsigned long int i = 0; i < B.n; i++) {
-        for (unsigned long int j = 0; j < B.m; j++) {
-            cout << B.matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+    // cout << "Matrix B: " << endl;
+    // for (unsigned long int i = 0; i < B.n; i++) {
+    //     for (unsigned long int j = 0; j < B.m; j++) {
+    //         cout << B.matrix[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << endl;
 
     cout << "Matrix C: " << endl;
     for (unsigned long int i = 0; i < C.n; i++) {
