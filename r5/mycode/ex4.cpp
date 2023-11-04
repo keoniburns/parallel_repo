@@ -207,7 +207,7 @@ int forwardStep(matrix_data &A) {
 
             for (int i = k + 1; i < A.n; i++) {
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
-                for (int j = k + 1; j < A.n; j++) {
+                for (int j = k + 1; j <= A.n; j++) {
                     A.matrix[i][j] -= (A.matrix[k][j] * reduce);
                 }
                 A.matrix[i][k] = 0;
