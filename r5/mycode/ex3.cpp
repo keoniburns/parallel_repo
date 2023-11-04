@@ -115,7 +115,7 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
 
     B.matrix.resize(B.n, vector<double>(B.m));
 
-    // #pragma omp parallel for num_threads(threads) collapse(2)
+#pragma omp parallel for num_threads(threads) collapse(2)
     for (int i = 0; i < A.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
@@ -124,7 +124,7 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
         }
     }
 
-    // #pragma omp parallel for num_threads(threads) collapse(2)
+#pragma omp parallel for num_threads(threads) collapse(2)
     for (int i = 0; i < B.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
