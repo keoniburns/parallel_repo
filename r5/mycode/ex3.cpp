@@ -11,7 +11,7 @@
 #include <sstream>
 #include <vector>
 
-#define threads (1)
+#define THREADS (4)  // default 4 threads
 
 using namespace std;
 
@@ -30,12 +30,14 @@ int main(int argc, char *argv[]) {
     matrix_data B;
     matrix_data C;
     timespec start, end;
+    int threads = THREADS;
 
     if (argc == 1) {
-        cerr << "this cannot be done yet please include data file with ./ex2" << endl;
+        cerr << "this cannot be done yet please include data file with ./ex2 and numthreads also" << endl;
         exit(-1);
     } else {
         filename = argv[1];
+        // threads = argv[2];
     }
 
     read_input(A, B, filename);
@@ -151,7 +153,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
 
-    // #pragma omp parallel for num_threads(threads) collapse(3)
+#pragma omp parallel for num_threads(threads) collapse(3)
     for (int i = 0; i < A.n; i++) {
         for (int j = 0; j < B.m; j++) {
             for (int k = 0; k < A.m; k++) {
