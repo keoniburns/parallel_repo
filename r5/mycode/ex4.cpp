@@ -177,7 +177,7 @@ int forwardStep(matrix_data &A) {
             if (maxPos != k) {
                 rowSwap(A, k, maxPos);
             }
-#pragma omp parallel for num_threads(THREADS) collapse(2)
+#pragma omp parallel for num_threads(THREADS)
             for (int i = k + 1; i < A.n; i++) {
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
                 for (int j = k + 1; j <= A.n; j++) {
