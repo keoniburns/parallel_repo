@@ -6,6 +6,8 @@
 #include <iomanip>
 #include <iostream>
 // #include <omp>
+#include <time.h>
+
 #include <sstream>
 #include <vector>
 
@@ -27,6 +29,7 @@ int main(int argc, char *argv[]) {
     matrix_data A;
     matrix_data B;
     matrix_data C;
+    timespec start, end;
 
     if (argc == 1) {
         cerr << "this cannot be done yet please include data file with ./ex2" << endl;
@@ -44,7 +47,15 @@ int main(int argc, char *argv[]) {
     }
     total_itr = A.n * B.m * A.m;
     // cout << "total number of iterations is: " << total_itr << endl;
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     multiplication(A, B, C);
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+
+    double time_taken;
+    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    cout << "time for multiplication" << time_taken << endl;
 
     // cout << "Matrix A: " << endl;
     // for (int i = 0; i < A.n; i++) {
@@ -139,6 +150,8 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.n = A.n;
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
 #pragma omp parallel for num_threads(threads) collapse(3)
     for (int i = 0; i < A.n; i++) {
