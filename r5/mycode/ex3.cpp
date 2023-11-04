@@ -14,7 +14,7 @@
 using namespace std;
 
 struct matrix_data {
-    unsigned long int n, m;  // dimensions of the matrix
+    int n, m;  // dimensions of the matrix
     vector<vector<double>> matrix;
 };
 
@@ -22,7 +22,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C);
 void read_input(matrix_data &A, matrix_data &B, string filename);
 
 int main(int argc, char *argv[]) {
-    unsigned long int total_itr = 0;
+    int total_itr = 0;
     string filename;
     matrix_data A;
     matrix_data B;
@@ -47,8 +47,8 @@ int main(int argc, char *argv[]) {
     multiplication(A, B, C);
 
     // cout << "Matrix A: " << endl;
-    // for (unsigned long int i = 0; i < A.n; i++) {
-    //     for (unsigned long int j = 0; j < A.m; j++) {
+    // for (int i = 0; i < A.n; i++) {
+    //     for (int j = 0; j < A.m; j++) {
     //         cout << A.matrix[i][j] << " ";
     //     }
     //     cout << endl;
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
     // cout << endl;
 
     // cout << "Matrix B: " << endl;
-    // for (unsigned long int i = 0; i < B.n; i++) {
-    //     for (unsigned long int j = 0; j < B.m; j++) {
+    // for (int i = 0; i < B.n; i++) {
+    //     for (int j = 0; j < B.m; j++) {
     //         cout << B.matrix[i][j] << " ";
     //     }
     //     cout << endl;
@@ -66,8 +66,8 @@ int main(int argc, char *argv[]) {
 
     cout << "Matrix C: " << endl;
     cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
-    for (unsigned long int i = 0; i < C.n; i++) {
-        for (unsigned long int j = 0; j < C.m; j++) {
+    for (int i = 0; i < C.n; i++) {
+        for (int j = 0; j < C.m; j++) {
             cout << C.matrix[i][j] << " ";
         }
         cout << endl;
@@ -96,7 +96,7 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
         cerr << "can't grab first line" << endl;
     }
 
-    istringstream aDims(line);  // delimit each of the strings on the line unsigned long into a single word (aDims)
+    istringstream aDims(line);  // delimit each of the strings on the line into a single word (aDims)
     if (!(aDims >> A.n >> A.m)) {
         cerr << "cant grab dims for A" << endl;
     }
@@ -116,19 +116,19 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
     B.matrix.resize(B.n, vector<double>(B.m));
 
     // #pragma omp parallel for num_threads(threads) collapse(2)
-    for (unsigned long int i = 0; i < A.n; i++) {
+    for (int i = 0; i < A.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
-        for (unsigned long int j = 0; j < A.m; j++) {
+        for (int j = 0; j < A.m; j++) {
             coefficients >> A.matrix[i][j];
         }
     }
 
     // #pragma omp parallel for num_threads(threads) collapse(2)
-    for (unsigned long int i = 0; i < B.n; i++) {
+    for (int i = 0; i < B.n; i++) {
         getline(infile, line);
         istringstream coefficients(line);
-        for (unsigned long int j = 0; j < B.m; j++) {
+        for (int j = 0; j < B.m; j++) {
             coefficients >> B.matrix[i][j];
         }
     }
@@ -141,9 +141,9 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.matrix.resize(C.n, vector<double>(C.m));
 
     // #pragma omp parallel for num_threads(threads) collapse(3)
-    for (unsigned long int i = 0; i < A.n; i++) {
-        for (unsigned long int j = 0; j < B.m; j++) {
-            for (unsigned long int k = 0; k < A.m; k++) {
+    for (int i = 0; i < A.n; i++) {
+        for (int j = 0; j < B.m; j++) {
+            for (int k = 0; k < A.m; k++) {
                 C.matrix[i][j] += A.matrix[i][k] * B.matrix[k][j];
             }
         }
