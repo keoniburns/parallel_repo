@@ -11,7 +11,7 @@
 #include <sstream>
 #include <vector>
 
-#define threads (8)
+#define threads (1)
 
 using namespace std;
 
@@ -24,7 +24,7 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C);
 void read_input(matrix_data &A, matrix_data &B, string filename);
 
 int main(int argc, char *argv[]) {
-    int total_itr = 0;
+    // int total_itr = 0;
     string filename;
     matrix_data A;
     matrix_data B;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
         cerr << "this math isn't mathing.\nA must have the same number of columns as B does rows" << endl;
         exit(-1);
     }
-    total_itr = A.n * B.m * A.m;
+    // total_itr = A.n * B.m * A.m;
     // cout << "total number of iterations is: " << total_itr << endl;
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     double time_taken;
     time_taken = (end.tv_sec - start.tv_sec) * 1e9;
     time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-    cout << "time for multiplication" << time_taken << endl;
+    cout << "time for multiplication: " << time_taken << endl;
 
     // cout << "Matrix A: " << endl;
     // for (int i = 0; i < A.n; i++) {
