@@ -65,10 +65,13 @@ int main(int argc, char *argv[]) {
     // cout << endl;
 
     cout << "Matrix C: " << endl;
+    cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
     for (unsigned long int i = 0; i < C.n; i++) {
+        cout << "[";
         for (unsigned long int j = 0; j < C.m; j++) {
             cout << C.matrix[i][j] << " ";
         }
+        cout << "]";
         cout << endl;
     }
 
@@ -138,25 +141,13 @@ void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
     C.n = A.n;
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
-    // unsigned long int itrs = A.n * B.m * A.m;
-    // unsigned long int row, col;
 
 #pragma omp parallel for num_threads(threads) collapse(3)
     for (unsigned long int i = 0; i < A.n; i++) {
         for (unsigned long int j = 0; j < B.m; j++) {
             for (unsigned long int k = 0; k < A.m; k++) {
                 C.matrix[i][j] += A.matrix[i][k] * B.matrix[k][j];
-                // count++;
             }
-            // for (unsigned long int i = 0; i < itrs; i++) {
-
-            // }
-
-            //     cout << "C" << (i % 3) + count << (j % 3) << " " << A.matrix[(i % A.n)][j] << "x" << B.matrix[(j %
-            //     B.m)][i]
-            //          << endl;
-            // }
         }
     }
-    // cout << total_iterations << endl;
 }
