@@ -64,16 +64,14 @@ int main(int argc, char *argv[]) {
     // }
     // cout << endl;
 
-    cout << "Matrix C: " << endl;
-    cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
-    for (unsigned long int i = 0; i < C.n; i++) {
-        cout << "[";
-        for (unsigned long int j = 0; j < C.m; j++) {
-            cout << C.matrix[i][j] << " ";
-        }
-        cout << "]";
-        cout << endl;
-    }
+    // cout << "Matrix C: " << endl;
+    // cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
+    // for (unsigned long int i = 0; i < C.n; i++) {
+    //     for (unsigned long int j = 0; j < C.m; j++) {
+    //         cout << C.matrix[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
 
     return 0;
 }
