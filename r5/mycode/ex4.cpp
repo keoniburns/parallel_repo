@@ -22,7 +22,6 @@ struct matrix_data {
     vector<vector<double> > matrix;
 };
 
-void multiplication(matrix_data A, matrix_data B, matrix_data &C);
 void read_input(matrix_data &A, string filename);
 // void matrixPrint(matrix_data &A);
 void rowSwap(matrix_data &A, int n, int m);
@@ -135,34 +134,6 @@ void read_input(matrix_data &A, string filename) {
     }
 }
 
-void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
-    // the product's dimensions can be seen as the corresponding n & m from the matrices being multiplied
-    C.n = A.n;
-    C.m = B.m;
-    C.matrix.resize(C.n, vector<double>(C.m));
-
-    // #pragma omp parallel for num_threads(THREADS) collapse(3)
-    for (int i = 0; i < A.n; i++) {
-        for (int j = 0; j < B.m; j++) {
-            for (int k = 0; k < A.m; k++) {
-                C.matrix[i][j] += A.matrix[i][k] * B.matrix[k][j];
-            }
-        }
-    }
-}
-
-void invert(matrix_data A, matrix_data &Ainvert) {
-    for (int i = 0; i < A.n; i++) {
-        for (int j = 0; j < A.m; j++) {
-            if (A.matrix[i][j] == 0) {
-                continue;
-            } else {
-                Ainvert.matrix[i][j] = 1 / A.matrix[i][j];
-            }
-        }
-    }
-}
-
 void rowSwap(matrix_data &A, int n, int m) {
     for (int i = 0; i <= A.n; i++) {  // iterate through the rows
         double tmp = A.matrix[n][i];  // tmp to hold initial row val
@@ -206,7 +177,7 @@ int forwardStep(matrix_data &A) {
             if (maxPos != k) {
                 rowSwap(A, k, maxPos);
             }
-
+#pragma omp parallel for num_threads(THREADS) collapse(2)
             for (int i = k + 1; i < A.n; i++) {
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
                 for (int j = k + 1; j <= A.n; j++) {
@@ -221,6 +192,7 @@ int forwardStep(matrix_data &A) {
 
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
+#pragma omp parallel for num_threads(THREADS) collapse(2)
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
