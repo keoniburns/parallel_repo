@@ -115,7 +115,9 @@ void read_input(matrix_data &A, string filename) {
     if (!getline(infile, line)) {
         cerr << "can't grab first line" << endl;
     }
+    cout << line << endl;
 
+    getline(infile, line);
     istringstream aDims(line);  // delimit each of the strings on the line into a single word (aDims)
     if (!(aDims >> A.n >> A.m)) {
         cerr << "cant grab dims for A" << endl;
