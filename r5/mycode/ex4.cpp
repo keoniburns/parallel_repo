@@ -163,7 +163,7 @@ int forwardStep(matrix_data &A) {
         maxPos = k;                    // init current max
         maxVal = A.matrix[maxPos][k];  // grab value
 
-#pragma omp parallel for num_threadss(THREADS)
+#pragma omp parallel for num_threads(THREADS)
         for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
             if (abs(A.matrix[i][k]) > maxVal) {
                 maxVal = A.matrix[i][k];
