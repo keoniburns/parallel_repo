@@ -177,7 +177,7 @@ int forwardStep(matrix_data &A) {
             if (maxPos != k) {
                 rowSwap(A, k, maxPos);
             }
-#pragma omp parallel for num_threads(THREADS)
+#pragma omp parallel for num_threads(THREADS) collapse(1)
             for (int i = k + 1; i < A.n; i++) {
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
                 for (int j = k + 1; j <= A.n; j++) {
@@ -192,7 +192,7 @@ int forwardStep(matrix_data &A) {
 
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
-#pragma omp parallel for num_threads(THREADS)
+#pragma omp parallel for num_threads(THREADS) collapse(1)
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
