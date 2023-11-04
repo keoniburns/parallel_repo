@@ -229,7 +229,7 @@ void substitution(matrix_data &A) {
         sol[i] = sol[i] / A.matrix[i][i];
     }
     cout << "solution is: " << endl;
-    for (int i = 0; i < A.m; i++) {
+    for (int i = 0; i < A.n; i++) {
         cout << sol[i] << endl;
     }
 }
