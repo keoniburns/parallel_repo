@@ -31,6 +31,6 @@ gewpp: gewpp.c
 	$(CC) $(CFLAGS2) -o $@ gewpp.c
 
 ex4: ex4.cpp
-	$(CPP) $(OMPFLAGS) -o $@ ex4.cpp
+	$(CPP) $(OMPFLAGS) -o $@ ex4.cpp -fopenmp
 
 
