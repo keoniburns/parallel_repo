@@ -62,6 +62,9 @@ int main(int argc, char *argv[]) {
         }
         cout << endl;
     }
+    cout << endl;
+
+    cout << "Matrix C: " << endl;
     for (unsigned long int i = 0; i < C.n; i++) {
         for (unsigned long int j = 0; j < C.m; j++) {
             cout << C.matrix[i][j] << " ";
