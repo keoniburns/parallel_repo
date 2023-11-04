@@ -192,7 +192,7 @@ int forwardStep(matrix_data &A) {
 
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
-#pragma omp parallel for num_threads(THREADS) collapse(2)
+#pragma omp parallel for num_threads(THREADS)
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
