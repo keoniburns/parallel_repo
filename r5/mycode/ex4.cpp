@@ -164,15 +164,15 @@ int forwardStep(matrix_data &A, int &flag) {
         maxPos = k;                    // init current max
         maxVal = A.matrix[maxPos][k];  // grab value
 
-#pragma omp for
+#pragma omp parallel for num_threads(THREADS) collapse(3)
         for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
             if (abs(A.matrix[i][k]) > maxVal) {
                 maxVal = A.matrix[i][k];
             }
 
-// look if the diagonal is 0
-// this implies that the matrix is singular
-#pragma omp critical
+            // look if the diagonal is 0
+            // this implies that the matrix is singular
+
             {
                 if (!A.matrix[k][maxPos]) {
                     flag = k;
