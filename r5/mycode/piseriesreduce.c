@@ -61,12 +61,12 @@ int main(int argc, char** argv) {
     // MPI_Bcast(&g_sum, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
-        printf("20 decimals of pi  =3.14159265358979323846\n");
-        printf("C math library pi  =%15.14lf\n", M_PI);
-        printf("Madhava-Leibniz pi =%15.14lf, ppb error=%15.14lf\n", (4.0 * g_sum),
-               1000000000.0 * (M_PI - (4.0 * g_sum)));
-        printf("Euler modified pi  =%15.14lf, ppb error=%15.14lf\n", (4.0 * euler_g_sum),
-               1000000000.0 * (M_PI - (4.0 * euler_g_sum)));
+        // printf("20 decimals of pi  =3.14159265358979323846\n");
+        // printf("C math library pi  =%15.14lf\n", M_PI);
+        // printf("Madhava-Leibniz pi =%15.14lf, ppb error=%15.14lf\n", (4.0 * g_sum),
+        //        1000000000.0 * (M_PI - (4.0 * g_sum)));
+        // printf("Euler modified pi  =%15.14lf, ppb error=%15.14lf\n", (4.0 * euler_g_sum),
+        //        1000000000.0 * (M_PI - (4.0 * euler_g_sum)));
         printf("time elapsed: %lf\n", elapsed);
     }
 
