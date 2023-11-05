@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
         local_num = -local_num;
     }
 
-    printf("my_rank=%d, iterated up to %d, local_sum=%15.14lf\n", my_rank, idx, local_sum);
+    // printf("my_rank=%d, iterated up to %d, local_sum=%15.14lf\n", my_rank, idx, local_sum);
 
     // sum the sub-series for the rank for Euler improved convergence of the Madhava-Leibniz's formula for pi/4
     for (idx = my_rank * sub_length; idx < (sub_length * (my_rank + 1)); idx++) {
@@ -63,10 +63,10 @@ int main(int argc, char** argv) {
     if (my_rank == 0) {
         // printf("20 decimals of pi  =3.14159265358979323846\n");
         // printf("C math library pi  =%15.14lf\n", M_PI);
-        // printf("Madhava-Leibniz pi =%15.14lf, ppb error=%15.14lf\n", (4.0 * g_sum),
-        //        1000000000.0 * (M_PI - (4.0 * g_sum)));
-        // printf("Euler modified pi  =%15.14lf, ppb error=%15.14lf\n", (4.0 * euler_g_sum),
-        //        1000000000.0 * (M_PI - (4.0 * euler_g_sum)));
+        printf("Madhava-Leibniz pi =%15.14lf, ppb error=%15.14lf\n", (4.0 * g_sum),
+               1000000000.0 * (M_PI - (4.0 * g_sum)));
+        printf("Euler modified pi  =%15.14lf, ppb error=%15.14lf\n", (4.0 * euler_g_sum),
+               1000000000.0 * (M_PI - (4.0 * euler_g_sum)));
         printf("time elapsed: %lf\n", elapsed);
     }
 
