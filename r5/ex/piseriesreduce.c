@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
     double local_sum = 0.0, g_sum = 0.0, local_num = 1.0;
     unsigned int length;
     unsigned int sub_length;
+    double start, end;
 
     if (argc < 2) {
         printf("usage: piseriesreduce <series n>\n");
@@ -37,6 +38,7 @@ int main(int argc, char** argv) {
     if (my_rank == 0) printf("comm_sz=%d, length=%u, sub_length=%u\n", comm_sz, length, sub_length);
 
     // sum the sub-series for the rank for Leibniz's formula for pi/4
+    start = MPI_Wtime();
     for (idx = my_rank * sub_length; idx < (sub_length * (my_rank + 1)); idx++) {
         local_sum += local_num / ((2.0 * (double)idx) + 1.0);
         local_num = -local_num;
@@ -53,7 +55,8 @@ int main(int argc, char** argv) {
 
     MPI_Reduce(&euler_local_sum, &euler_g_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&local_sum, &g_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
+    end = MPI_Wtime();
+    double elapsed = (end - start) / 1000000000.0;
     // collective comm broadcast the rank 0 g_sum to all other ranks
     // MPI_Bcast(&g_sum, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
@@ -67,6 +70,7 @@ int main(int argc, char** argv) {
     }
 
     MPI_Finalize();
+    printf("time elapsed: %lf\n", elapsed);
 
     return 0;
 }
