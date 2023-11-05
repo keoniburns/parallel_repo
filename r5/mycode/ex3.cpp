@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
         cin >> threads;
         cout << "enter the dimensions for A in the format <n> <m>" << endl;
         cin >> A.n >> A.m;
-
+        A.matrix.resize(A.n, vector<double>(A.m));
         for (int i = 0; i < A.n; i++) {
             cout << "insert values for row " << i + 1 << " for Matrix A" << endl;
             string line;
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
             cerr << "the cols for A must be the same number as rows for B" << endl;
             exit(-1);
         }
-
+        B.matrix.resize(B.n, vector<double>(B.m));
         for (int i = 0; i < B.n; i++) {
             cout << "insert values for row " << i + 1 << " for Matrix B" << endl;
             string line;
