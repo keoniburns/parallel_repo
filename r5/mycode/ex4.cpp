@@ -164,24 +164,20 @@ int forwardStep(matrix_data &A, int &flag) {
         maxPos = k;                    // init current max
         maxVal = A.matrix[maxPos][k];  // grab value
 
-        // #pragma omp parallel for num_threads(THREADS)
+#pragma omp parallel for num_threads(THREADS)
         for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
             if (abs(A.matrix[i][k]) > maxVal) {
                 maxVal = A.matrix[i][k];
             }
 
-            // look if the diagonal is 0
-            // this implies that the matrix is singular
-
-            {
-                if (!A.matrix[k][maxPos]) {
-                    flag = k;
-                }
-
-                if (maxPos != k) {
-                    rowSwap(A, k, maxPos);
-                }
+            if (!A.matrix[k][maxPos]) {
+                return k;
             }
+
+            if (maxPos != k) {
+                rowSwap(A, k, maxPos);
+            }
+
             for (int i = k + 1; i < A.n; i++) {
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
                 for (int j = k + 1; j <= A.n; j++) {
@@ -197,7 +193,7 @@ int forwardStep(matrix_data &A, int &flag) {
 void substitution(matrix_data &A) {
     vector<double> sol(A.n);
 
-#pragma omp parallel for num_threads(THREADS)
+#pragma omp parallel for
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
