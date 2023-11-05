@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
     // 3) A = matrix of coefficients for LHS, and
     // 4) b = RHS
     //
-    // Use default gauss.dat or if arguments supplied, use input file with specific test.
+    // Use default gauss.dat or if argum ents supplied, use input file with specific test.
     //
     // x is the solution vector (unknowns) that we are solving for
     //

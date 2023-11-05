@@ -37,10 +37,35 @@ int main(int argc, char *argv[]) {
         exit(-1);
     } else {
         filename = argv[1];
-        // threads = argv[2];
+        cout << "enter the dimensions for A in the format <n> <m>" << endl;
+        cin >> A.n >> A.m;
+
+        for (int i = 0; i < A.n; i++) {
+            cout << "insert values for row " << i + 1 << " for Matrix A" << endl;
+            for (int j = 0; j < A.m; j++) {
+                cin >> A.matrix[i][j];
+            }
+        }
+
+        cout << "enter the dimensions for A in the format <n> <m>" << endl;
+        cin >> B.n >> B.m;
+
+        if (A.m != B.n) {
+            cerr << "the cols for A must be the same number as rows for B" << endl;
+            exit(-1);
+        }
+
+        for (int i = 0; i < B.n; i++) {
+            cout << "insert values for row " << i + 1 << " for Matrix B" << endl;
+            for (int j = 0; j < B.m; j++) {
+                cin >> B.matrix[i][j];
+            }
+        }
     }
 
-    read_input(A, B, filename);
+    if (argc == 2) {
+        read_input(A, B, filename);
+    }
 
     cout << "A num cols: " << A.m << "\nB num rows: " << B.n << endl;
     if (A.m != B.n) {

@@ -134,6 +134,13 @@ void read_input(matrix_data &A, string filename) {
     }
 }
 
+/**
+ * @brief swaps rows
+ *
+ * @param A
+ * @param n
+ * @param m
+ */
 void rowSwap(matrix_data &A, int n, int m) {
     for (int i = 0; i <= A.n; i++) {  // iterate through the rows
         double tmp = A.matrix[n][i];  // tmp to hold initial row val
@@ -142,7 +149,11 @@ void rowSwap(matrix_data &A, int n, int m) {
     }
 }
 
-// this only works for matrixes with dimensions NxN
+/**
+ * @brief flag m
+ *
+ * @param A
+ */
 void gauss(matrix_data &A) {
     int flag;
     forwardStep(A, flag);
