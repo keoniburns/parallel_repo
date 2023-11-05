@@ -121,7 +121,7 @@ void rowSwap(matrix_data &A, int n, int m) {
  * @param A
  */
 void gauss(matrix_data &A, int threads) {
-    int flag;
+    int flag = 0;
     forwardStep(A, threads);
     if (flag != 0 && A.matrix[flag][A.m]) {
         cerr << "inconsistent system" << endl;
