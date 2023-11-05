@@ -38,7 +38,10 @@ int main(int argc, char *argv[]) {
         cout << "enter the dimensions for A in the format <n> <m>" << endl;
         cin >> A.n >> A.m;
         A.matrix.resize(A.n, vector<double>(A.m));
-        for (int i = 0; i < A.n; i++) {
+        for (int i = -1; i < A.n; i++) {
+            if (i == -1) {
+                continue;
+            }
             cout << "insert values for row " << i + 1 << " for Matrix A" << endl;
             string line;
             getline(cin, line);
