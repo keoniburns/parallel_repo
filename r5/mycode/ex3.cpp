@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         A.matrix.resize(A.n, vector<double>(A.m));
 
         cout << "enter one element at a time" << endl;
-        for (int i = 1; i < A.n; i++) {
+        for (int i = 0; i < A.n; i++) {
             for (int j = 0; j < A.m; j++) {
                 cout << "element " << i << " " << j << ": ";
                 cin >> A.matrix[i][j];
