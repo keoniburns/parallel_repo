@@ -141,25 +141,26 @@ int forwardStep(matrix_data &A, int threads) {
         maxPos = k;                    // init current max
         maxVal = A.matrix[maxPos][k];  // grab value
 
-        for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
-            if (abs(A.matrix[i][k]) > maxVal) {
+        for (int i = k + 1; i < A.n; i++) {      // search rows for the largest val and pivot
+            if (abs(A.matrix[i][k]) > maxVal) {  // grab the largest value for the diagonal
                 maxVal = A.matrix[i][k];
+                maxPos = i;
             }
 
-            if (!A.matrix[k][maxPos]) {
+            if (!A.matrix[k][maxPos]) {  // if the diagonal is 0 we want to exit
                 return k;
             }
 
-            if (maxPos != k) {
+            if (maxPos != k) {  // if max position is not k we swap rows
                 rowSwap(A, k, maxPos);
             }
 
-            for (int i = k + 1; i < A.n; i++) {
+            for (int i = k + 1; i < A.n; i++) {  // iterate the rows and cols divide them by the pivot value
                 double reduce = A.matrix[i][k] / A.matrix[k][k];
                 for (int j = k + 1; j <= A.n; j++) {
                     A.matrix[i][j] -= (A.matrix[k][j] * reduce);
                 }
-                A.matrix[i][k] = 0;
+                A.matrix[i][k] = 0;  // set everything else to 0
             }
         }
     }
@@ -170,8 +171,8 @@ void substitution(matrix_data &A, int threads) {
     vector<double> sol(A.n);
 
 #pragma omp parallel for num_threads(threads)
-    for (int i = A.n - 1; i >= 0; i--) {
-        sol[i] = A.matrix[i][A.n];
+    for (int i = A.n - 1; i >= 0; i--) {  // bottom of the matrix up
+        sol[i] = A.matrix[i][A.n];        // this is our answer
         for (int j = i + 1; j < A.m; j++) {
             sol[i] -= A.matrix[i][j] * sol[j];
         }
