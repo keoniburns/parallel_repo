@@ -20,7 +20,7 @@ struct matrix_data {
     vector<vector<double>> matrix;
 };
 
-void multiplication(matrix_data A, matrix_data B, matrix_data &C);
+void multiplication(matrix_data A, matrix_data B, matrix_data &C, int threads);
 void read_input(matrix_data &A, matrix_data &B, string filename);
 
 int main(int argc, char *argv[]) {
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     matrix_data B;
     matrix_data C;
     timespec start, end;
-    int thread = THREADS;
+    int threads = THREADS;
 
     if (argc == 1) {
         cerr << "this cannot be done yet please include data file with ./ex2 and numthreads also" << endl;
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
     // cout << "total number of iterations is: " << total_itr << endl;
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    multiplication(A, B, C);
+    multiplication(A, B, C, threads);
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
     double time_taken;
@@ -173,13 +173,13 @@ void read_input(matrix_data &A, matrix_data &B, string filename) {
     }
 }
 
-void multiplication(matrix_data A, matrix_data B, matrix_data &C) {
+void multiplication(matrix_data A, matrix_data B, matrix_data &C, int threads) {
     // the product's dimensions can be seen as the corresponding n & m from the matrices being multiplied
     C.n = A.n;
     C.m = B.m;
     C.matrix.resize(C.n, vector<double>(C.m));
 
-#pragma omp parallel for num_threads(thread) collapse(3)
+#pragma omp parallel for num_threads(threads) collapse(3)
     for (int i = 0; i < A.n; i++) {
         for (int j = 0; j < B.m; j++) {
             for (int k = 0; k < A.m; k++) {
