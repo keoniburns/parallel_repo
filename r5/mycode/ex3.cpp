@@ -33,11 +33,8 @@ int main(int argc, char *argv[]) {
     int threads = THREADS;
 
     if (argc == 1) {
-        cerr << "this cannot be done yet please include data file with ./ex2 and numthreads also" << endl;
-        exit(-1);
-    } else {
-        filename = argv[1];
-        threads = atoi(argv[2]);
+        cout << "enter num threads " << endl;
+        cin >> threads;
         cout << "enter the dimensions for A in the format <n> <m>" << endl;
         cin >> A.n >> A.m;
 
@@ -62,6 +59,9 @@ int main(int argc, char *argv[]) {
                 cin >> B.matrix[i][j];
             }
         }
+    } else {
+        filename = argv[1];
+        threads = atoi(argv[2]);
     }
 
     if (argc == 2) {
