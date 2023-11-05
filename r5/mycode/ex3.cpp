@@ -65,9 +65,6 @@ int main(int argc, char *argv[]) {
     } else {
         filename = argv[1];
         threads = atoi(argv[2]);
-    }
-
-    if (argc == 2) {
         read_input(A, B, filename);
     }
 
@@ -76,8 +73,6 @@ int main(int argc, char *argv[]) {
         cerr << "this math isn't mathing.\nA must have the same number of columns as B does rows" << endl;
         exit(-1);
     }
-    // total_itr = A.n * B.m * A.m;
-    // cout << "total number of iterations is: " << total_itr << endl;
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     multiplication(A, B, C, threads);
