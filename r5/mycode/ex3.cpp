@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
         read_input(A, B, filename);
     }
 
-    cout << "A num cols: " << A.m << "\nB num rows: " << B.n << endl;
+    // cout << "A num cols: " << A.m << "\nB num rows: " << B.n << endl;
     if (A.m != B.n) {
         cerr << "this math isn't mathing.\nA must have the same number of columns as B does rows" << endl;
         exit(-1);
@@ -101,14 +101,14 @@ int main(int argc, char *argv[]) {
     // }
     // cout << endl;
 
-    cout << "Matrix C: " << endl;
-    cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
-    for (int i = 0; i < C.n; i++) {
-        for (int j = 0; j < C.m; j++) {
-            cout << C.matrix[i][j] << " ";
-        }
-        cout << endl;
-    }
+    // cout << "Matrix C: " << endl;
+    // cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
+    // for (int i = 0; i < C.n; i++) {
+    //     for (int j = 0; j < C.m; j++) {
+    //         cout << C.matrix[i][j] << " ";
+    //     }
+    //     cout << endl;
+    // }
 
     return 0;
 }
