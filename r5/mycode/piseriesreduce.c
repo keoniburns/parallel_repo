@@ -50,13 +50,13 @@ int main(int argc, char** argv) {
     for (idx = my_rank * sub_length; idx < (sub_length * (my_rank + 1)); idx++) {
         euler_local_sum += 2.0 / (((4.0 * (double)idx) + 1.0) * (4.0 * (double)idx + 3.0));
     }
+    end = MPI_Wtime();
 
     printf("my_rank=%d, iterated up to %d, local_sum=%15.14lf\n", my_rank, idx, local_sum);
 
     MPI_Reduce(&euler_local_sum, &euler_g_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(&local_sum, &g_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    end = MPI_Wtime();
-    double elapsed = (end - start) / 1000000000.0;
+    double elapsed = (end - start);
     // collective comm broadcast the rank 0 g_sum to all other ranks
     // MPI_Bcast(&g_sum, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
