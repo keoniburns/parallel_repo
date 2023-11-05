@@ -67,10 +67,10 @@ int main(int argc, char** argv) {
                1000000000.0 * (M_PI - (4.0 * g_sum)));
         printf("Euler modified pi  =%15.14lf, ppb error=%15.14lf\n", (4.0 * euler_g_sum),
                1000000000.0 * (M_PI - (4.0 * euler_g_sum)));
+        printf("time elapsed: %lf\n", elapsed);
     }
 
     MPI_Finalize();
-    printf("time elapsed: %lf\n", elapsed);
 
     return 0;
 }
