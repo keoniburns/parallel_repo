@@ -58,24 +58,6 @@ int main(int argc, char *argv[]) {
 
     gauss(A, threads);
 
-    // cout << "Matrix B: " << endl;
-    // for (int i = 0; i < B.n; i++) {
-    //     for (int j = 0; j < B.m; j++) {
-    //         cout << B.matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Matrix C: " << endl;
-    // cout << "Dimensions in NxM form: " << C.n << "x" << C.m << endl;
-    // for (int i = 0; i < C.n; i++) {
-    //     for (int j = 0; j < C.m; j++) {
-    //         cout << C.matrix[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-
     return 0;
 }
 
@@ -148,7 +130,7 @@ void gauss(matrix_data &A, int threads) {
         return;
     }
 
-    substitution(A);
+    substitution(A, threads);
 }
 
 int forwardStep(matrix_data &A, int threads) {
@@ -159,7 +141,7 @@ int forwardStep(matrix_data &A, int threads) {
         maxPos = k;                    // init current max
         maxVal = A.matrix[maxPos][k];  // grab value
 
-#pragma omp parallel for num_threads(THREADS)
+#pragma omp for
         for (int i = k + 1; i < A.n; i++) {  // search rows for the largest val and pivot
             if (abs(A.matrix[i][k]) > maxVal) {
                 maxVal = A.matrix[i][k];
