@@ -34,6 +34,6 @@ ex4: ex4.cpp
 	$(CPP) $(OMPFLAGS) -o $@ ex4.cpp -fopenmp
 
 piseriesreduce: piseriesreduce.c
-	$(CC) $(MPIFLAGS) -o $@ piseriesreduce.c -lm
+	$(MPICCCC) $(MPIFLAGS) -o $@ piseriesreduce.c $(LIB_DIRS) -lm
 
 
