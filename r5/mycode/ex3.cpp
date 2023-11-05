@@ -38,16 +38,12 @@ int main(int argc, char *argv[]) {
         cout << "enter the dimensions for A in the format <n> <m>" << endl;
         cin >> A.n >> A.m;
         A.matrix.resize(A.n, vector<double>(A.m));
-        for (int i = -1; i < A.n; i++) {
-            if (i == -1) {
-                continue;
-            }
-            cout << "insert values for row " << i + 1 << " for Matrix A" << endl;
-            string line;
-            getline(cin, line);
-            istringstream coeffs(line);
+
+        cout << "enter one element at a time" << endl;
+        for (int i = 1; i < A.n; i++) {
             for (int j = 0; j < A.m; j++) {
-                coeffs >> A.matrix[i][j];
+                cout << "element " << i << " " << j << ": ";
+                cin >> A.matrix[i][j];
             }
         }
 
@@ -58,14 +54,12 @@ int main(int argc, char *argv[]) {
             cerr << "the cols for A must be the same number as rows for B" << endl;
             exit(-1);
         }
+        cout << "enter one element at a time" << endl;
         B.matrix.resize(B.n, vector<double>(B.m));
         for (int i = 0; i < B.n; i++) {
-            cout << "insert values for row " << i + 1 << " for Matrix B" << endl;
-            string line;
-            getline(cin, line);
-            istringstream coeffs(line);
             for (int j = 0; j < B.m; j++) {
-                coeffs >> B.matrix[i][j];
+                cout << "element " << i << " " << j << ": ";
+                cin >> B.matrix[i][j];
             }
         }
     } else {
