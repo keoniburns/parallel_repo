@@ -4,14 +4,14 @@ MPICC = mpicc
 CPP = g++
 CC = gcc
 CFLAGS= -g -Wall $(INCLUDE_DIRS) $(CDEFS)
-MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS) $(LIB_DIRS)
+MPIFLAGS= -g -Wall -O2 $(INCLUDE_DIRS) 
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 OMPFLAGS = -g -Wall 
 
-PRODUCT= ex2 ex3 gewpp ex4 
+PRODUCT= ex2 ex3 gewpp ex4 piseriesreduce
 # MPIFILES= ex2.c
-CPPFILES= ex2.cpp ex3.cpp ex4.cpp
-CFILES= gewpp.c
+CPPFILES= ex2.cpp ex3.cpp ex4.cpp 
+CFILES= gewpp.c piseriesreduce.c
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
 
