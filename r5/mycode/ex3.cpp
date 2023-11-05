@@ -40,8 +40,11 @@ int main(int argc, char *argv[]) {
 
         for (int i = 0; i < A.n; i++) {
             cout << "insert values for row " << i + 1 << " for Matrix A" << endl;
+            string line;
+            getline(cin, line);
+            istringstream coeffs(line);
             for (int j = 0; j < A.m; j++) {
-                cin >> A.matrix[i][j];
+                coeffs >> A.matrix[i][j];
             }
         }
 
@@ -55,8 +58,11 @@ int main(int argc, char *argv[]) {
 
         for (int i = 0; i < B.n; i++) {
             cout << "insert values for row " << i + 1 << " for Matrix B" << endl;
+            string line;
+            getline(cin, line);
+            istringstream coeffs(line);
             for (int j = 0; j < B.m; j++) {
-                cin >> B.matrix[i][j];
+                coeffs >> B.matrix[i][j];
             }
         }
     } else {
