@@ -25,30 +25,25 @@ struct matrix_data {
 void read_input(matrix_data &A, string filename);
 // void matrixPrint(matrix_data &A);
 void rowSwap(matrix_data &A, int n, int m);
-int forwardStep(matrix_data &A, int &flag);
-void substitution(matrix_data &A);
-void gauss(matrix_data &A);
+int forwardStep(matrix_data &A, int);
+void substitution(matrix_data &A, int);
+void gauss(matrix_data &A, int);
 
 int main(int argc, char *argv[]) {
     // int total_itr = 0;
     string filename;
     matrix_data A;
-    timespec start, end;
     int threads = THREADS;
 
     if (argc == 1) {
-        cerr << "this cannot be done yet please include data file with ./ex2 and numthreads also" << endl;
+        cerr << "include the input file and number of threads please" << endl;
         exit(-1);
     } else {
         filename = argv[1];
-        // threads = argv[2];
+        threads = atoi(argv[2]);
     }
 
     read_input(A, filename);
-
-    // Ai.n = A.n;
-    // Ai.m = A.m;
-    // Ai.matrix = A.matrix;
 
     cout << "A num rows: " << A.n << "\nA num cols: " << A.m << endl;
 
@@ -61,18 +56,7 @@ int main(int argc, char *argv[]) {
     }
     cout << endl;
 
-    gauss(A);
-    // total_itr = A.n * B.m * A.m;
-    // cout << "total number of iterations is: " << total_itr << endl;
-
-    // clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    // multiplication(A, RHS, sol);
-    // clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-
-    // double time_taken;
-    // time_taken = (end.tv_sec - start.tv_sec) * 1e9;
-    // time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-    // cout << "time for multiplication: " << time_taken << endl;
+    gauss(A, threads);
 
     // cout << "Matrix B: " << endl;
     // for (int i = 0; i < B.n; i++) {
@@ -154,9 +138,9 @@ void rowSwap(matrix_data &A, int n, int m) {
  *
  * @param A
  */
-void gauss(matrix_data &A) {
+void gauss(matrix_data &A, int threads) {
     int flag;
-    forwardStep(A, flag);
+    forwardStep(A, threads);
     if (flag != 0 && A.matrix[flag][A.m]) {
         cerr << "inconsistent system" << endl;
     } else if (flag != 0) {
@@ -167,7 +151,7 @@ void gauss(matrix_data &A) {
     substitution(A);
 }
 
-int forwardStep(matrix_data &A, int &flag) {
+int forwardStep(matrix_data &A, int threads) {
     double maxVal;
     int maxPos;
 
@@ -201,10 +185,10 @@ int forwardStep(matrix_data &A, int &flag) {
     return 0;
 }
 
-void substitution(matrix_data &A) {
+void substitution(matrix_data &A, int threads) {
     vector<double> sol(A.n);
 
-#pragma omp parallel for
+#pragma omp parallel for num_threads(threads)
     for (int i = A.n - 1; i >= 0; i--) {
         sol[i] = A.matrix[i][A.n];
         for (int j = i + 1; j < A.m; j++) {
