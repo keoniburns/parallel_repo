@@ -62,9 +62,13 @@ int main() {
     {
         do  // while there are potentially more roots on the search interval
         {
+            int terminate = 0;
+
 #pragma omp for
             for (itr = 1; itr <= maxitr; itr++)  // find the next root on the sub-interval
             {
+                if (terminate) continue;  // Skip iterations if termination signal is set
+
                 x1 = x0 + step;
 
                 // Any difference in sign between x0 and x1 will result in a sign_changed less than zero - a crossing
@@ -80,8 +84,8 @@ int main() {
 
                         rootfound++;
 
-                        // We can exit on the first root (zero crossing found) or keep looking
-                        break;
+                        // Set termination signal
+                        terminate = 1;
                     }
                 }
 
