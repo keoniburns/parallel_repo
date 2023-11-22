@@ -77,8 +77,8 @@ int main() {
                 if (sign_changed < 0.0) {
 #pragma omp critical
                     {
-                        // cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
-                        //      << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
+                        cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
+                             << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
 
                         if (fabs(f((x1 + x0) / 2.0)) > max_error) max_error = fabs(f((x1 + x0) / 2.0));
 
