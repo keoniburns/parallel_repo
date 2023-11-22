@@ -28,36 +28,77 @@ int main() {
     clock_gettime(CLOCK_MONOTONIC, &start_t);
     fstart = (double)start_t.tv_sec + (double)start_t.tv_nsec / 1000000000.0;
 
-    do {
-        for (itr = 1; itr <= maxitr; itr++) {
-            x1 = x0 + step;
+// do {
+//     for (itr = 1; itr <= maxitr; itr++) {
+//         x1 = x0 + step;
 
-            // Any difference in sign between x0 and x1 will result in a sign_changed less than zero - a crossing
-            sign_changed = f(x0) * f(x1);
+//         // Any difference in sign between x0 and x1 will result in a sign_changed less than zero - a crossing
+//         sign_changed = f(x0) * f(x1);
 
-            if (sign_changed < 0.0) {
-                // cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
-                //      << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
+//         if (sign_changed < 0.0) {
+//             // cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
+//             //      << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
 
-                if (fabs(f((x1 + x0) / 2.0)) > max_error) max_error = fabs(f((x1 + x0) / 2.0));
+//             if (fabs(f((x1 + x0) / 2.0)) > max_error) max_error = fabs(f((x1 + x0) / 2.0));
 
-                rootfound++;
+//             rootfound++;
 
-                // We can exit on the first root (zero crossing found) or keep looking
-                break;
+//             // We can exit on the first root (zero crossing found) or keep looking
+//             break;
+//         }
+
+//         x0 = x1;  // advance the step interval
+//     }
+
+//     // Re-start search for the next root one step beyond the last one found
+//     total_itr += itr;
+
+//     x0 = x1;
+//     itr = 1;
+
+// } while ((x0 < xfinal) &&
+//          (itr < maxitr));  // exit the outer loop search for all roots if the end is reached or max iterations
+#pragma omp parallel reduction(+ : rootfound, total_itr) private(itr, x1, sign_changed)
+    {
+        do  // while there are potentially more roots on the search interval
+        {
+#pragma omp for
+            for (itr = 1; itr <= maxitr; itr++)  // find the next root on the sub-interval
+            {
+                x1 = x0 + step;
+
+                // Any difference in sign between x0 and x1 will result in a sign_changed less than zero - a crossing
+                sign_changed = f(x0) * f(x1);
+
+                if (sign_changed < 0.0) {
+#pragma omp critical
+                    {
+                        // cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
+                        //      << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
+
+                        if (fabs(f((x1 + x0) / 2.0)) > max_error) max_error = fabs(f((x1 + x0) / 2.0));
+
+                        rootfound++;
+
+                        // We can exit on the first root (zero crossing found) or keep looking
+                        break;
+                    }
+                }
+
+                x0 = x1;  // advance the step interval
             }
 
-            x0 = x1;  // advance the step interval
-        }
+// Re-start search for the next root one step beyond the last one found
+#pragma omp single
+            {
+                total_itr += itr;
+                x0 = x1;
+                itr = 1;
+            }
 
-        // Re-start search for the next root one step beyond the last one found
-        total_itr += itr;
-
-        x0 = x1;
-        itr = 1;
-
-    } while ((x0 < xfinal) &&
-             (itr < maxitr));  // exit the outer loop search for all roots if the end is reached or max iterations
+        } while ((x0 < xfinal) &&
+                 (itr < maxitr));  // exit the outer loop search for all roots if the end is reached or max iterations
+    }
 
     clock_gettime(CLOCK_MONOTONIC, &stop_t);
     fstop = (double)stop_t.tv_sec + (double)stop_t.tv_nsec / 1000000000.0;
