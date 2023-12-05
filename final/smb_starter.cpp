@@ -52,6 +52,7 @@
 using std::cout;
 using std::endl;
 using std::setprecision;
+using std::string;
 using std::vector;
 
 void smbFft(double *fftBuffer, long fftFrameSize, long sign);
@@ -59,10 +60,19 @@ double smbAtan2(double x, double y);
 void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize, long osamp, double sampleRate,
                    double *indata, double *outdata);
 
-int main() {
+int main(int argc, char *argv[]) {
     // Set up parameters
+    string infile, outfile;
+    if (argc > 1) {
+        infile = argv[1];
+        outfile = argv[2];
+    } else {
+        infile = "./PinkPanther30.wav";
+        outfile = "./myPanther2x.wav";
+    }
+
     AudioFile<double> audio;
-    audio.load("./PinkPanther30.wav");
+    audio.load(infile);
     audio.printSummary();
     const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
     const long fftFrameSize = 1024;                                  // FFT frame size
@@ -106,7 +116,7 @@ int main() {
     audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
     audio.setAudioBuffer(final);
     audio.setSampleRate(sampleRate);
-    audio.save("./myPanther2x.wav");
+    audio.save(outfile);
     return 0;
 }
 
