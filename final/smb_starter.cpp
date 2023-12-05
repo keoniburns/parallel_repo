@@ -95,13 +95,15 @@ int main() {
     // }
 
     // printf("\nOutput data:\n");
-    vector<vector<double>> out;
+    vector<double> out;
     for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-        out[0].push_back(outdata[i]);
+        out.push_back(outdata[i]);
         // cout << setprecision(15) << outdata[i] << endl;
     }
+    vector<vector<double>> final;
+    final.push_back(out);
     audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
-    audio.setAudioBuffer(out);
+    audio.setAudioBuffer(final);
     audio.setSampleRate(sampleRate);
     audio.save("./mytest.wav");
     return 0;
