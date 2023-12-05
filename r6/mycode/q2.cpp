@@ -1,122 +1,87 @@
-/**
- * @file q1.cpp
- * @author keoni burns
- * @brief caluculates the polynomial root function -x^3+9.7x^2-1.3x-105.7
- * @version 0.1
- * @date 2023-11-09
- *
- * @copyright Copyright (c) 2023
- *
- */
+// #include <omp.h>
 
-#include <float.h>
-#include <math.h>
-#include <time.h>
-
-#include <iomanip>
+#include <cmath>
+#include <ctime>
 #include <iostream>
-
-double func(double x);
-double derv(double x);
-double NewtRaph(double x0, double err, double n);
-double regula(int n, double x0, double x1, double x2, double x3, double err);
-void regHelper(double *x, double x0, double x1, double fx0, double fx1, int *itr);
-
+#include <limits>
 using namespace std;
 
-int main(int argc, char *argv[]) {
-    struct timespec start, stop;
-    double fstart, fstop;
-    int n;
-    double value, x0, x1, totErr;
-    int alg;
-    cout << "enter x0, x1(if not applicable use -1), allowed error, and max iterations on individual lines" << endl;
-    cin >> x0;
-    cin >> x1;
-    cin >> totErr;
-    cin >> n;
+double f(double x) { return cos(x * x); }
 
-    int local_n = (int)(x1 - x0) / (n);
+int main() {
+    unsigned long long itr, maxitr, total_itr = 0;
+    unsigned int rootfound = 0;
+    double max_error = 0.0, fstart = 0.0, fstop = 0.0;
+    double step = 2.0 * numeric_limits<double>::epsilon(), x0, x1, xfinal, sign_changed = 0, start;
+    timespec start_t, stop_t;
 
-    cout << "running newton" << endl;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-    fstart = (double)start.tv_sec + ((double)start.tv_nsec / 1000000000.0);
-    double new_x = x0;
-    for (int i = (int)x0; i < (int)x1; i++) {
-        value = NewtRaph(new_x, totErr, local_n);
-        new_x = value;
+    cout << "smallest step is 2x epsilon is " << (double)(2.0 * numeric_limits<double>::epsilon()) << endl;
+
+    cout << "Enter x0 start, xfinal end, step size and maximum iterations to search for each root on sub-interval of "
+            "1.0 "
+         << endl;
+    cin >> x0 >> xfinal >> step >> maxitr;
+    start = x0;
+
+    cout << "Will step at " << step << " from " << x0 << " to " << xfinal << " to find each root, with "
+         << (((unsigned)(xfinal - x0) + 1) * maxitr) << " total search steps" << endl;
+    clock_gettime(CLOCK_MONOTONIC, &start_t);
+    fstart = (double)start_t.tv_sec + (double)start_t.tv_nsec / 1000000000.0;
+
+    do  // while there are potentially more roots on the search interval
+    {
+        int terminate = 0;
+
+        // #pragma omp for
+        for (itr = 1; itr <= maxitr; itr++)  // find the next root on the sub-interval
+        {
+            if (terminate) continue;  // Skip iterations if termination signal is set
+
+            x1 = x0 + step;
+
+            // Any difference in sign between x0 and x1 will result in a sign_changed less than zero - a crossing
+            sign_changed = f(x0) * f(x1);
+
+            if (sign_changed < 0.0) {
+                // #pragma omp critical
+                {
+                    cout << "\n*** Sign change at " << total_itr + itr << " iterations: estimated root at "
+                         << (x1 + x0) / 2.0 << ", f[root]=" << f((x1 + x0) / 2.0) << endl;
+
+                    if (fabs(f((x1 + x0) / 2.0)) > max_error) max_error = fabs(f((x1 + x0) / 2.0));
+
+                    rootfound++;
+
+                    // Set termination signal
+                    terminate = 1;
+                }
+            }
+
+            x0 = x1;  // advance the step interval
+        }
+
+        // Re-start search for the next root one step beyond the last one found
+        // #pragma omp single
+        {
+            total_itr += itr;
+            x0 = x1;
+            itr = 1;
+        }
+
+    } while ((x0 < xfinal) &&
+             (itr < maxitr));  // exit the outer loop search for all roots if the end is reached or max iterations
+
+    clock_gettime(CLOCK_MONOTONIC, &stop_t);
+    fstop = (double)stop_t.tv_sec + (double)stop_t.tv_nsec / 1000000000.0;
+    cout << "\n\nSearch Results (completed in " << (fstop - fstart) * 1000.0 << " milliseconds):" << endl;
+
+    if (!rootfound) {
+        cout << "After " << itr << " iterations: No solution (zero crossing) found on interval " << start << " to "
+             << x0 << endl;
+    } else {
+        cout << rootfound << " roots found on interval " << start << " to " << x0 << ", with max error=" << max_error
+             << " in " << total_itr << " iterations" << endl;
     }
-    clock_gettime(CLOCK_MONOTONIC, &stop);
-    fstop = (double)stop.tv_sec + ((double)stop.tv_nsec / 1000000000.0);
 
-    cout << setprecision(15) << "estimated root is " << value << endl;
-    cout << setprecision(15) << "our verification on how zero it really is: " << func(value) << endl;
-    cout << "monotonic time: " << (fstop - fstart) << endl;
     return 0;
 }
-
-/* -x^3+9.7x^2-1.3x-105.7 func */
-double func(double x) { return (cos(x * x)); }
-
-/* -3x^2+19.4x-1.3 derivative */
-double derv(double x) { return ((-2 * x) * sin(x * x)); }
-
-double NewtRaph(double x0, double err, double n) {
-    double root = 0, x1 = 0, h;
-    // if (fabs(derv(x0)) < err) {
-    //     cout << "slope at " << x0 << " is " << derv(x0) << "\nit needs to be adjusted" << endl;
-
-    //     x0 += err;
-
-    //     for (int i = 0; i < n; i++) {
-    //         if (fabs(derv(x0)) < err) {
-    //             x0 += err;
-    //         } else {
-    //             break;
-    //         }
-    //     }
-
-    //     cout << "new initial guess is " << x0 << endl;
-    // }
-
-    // if (fabs(derv(x0)) < err) {
-    //     cout << "this aint the guess chief" << endl;
-    // }
-
-    for (int i = 1; i <= n; i++) {
-        h = func(x0) / derv(x0);
-        x1 = x0 - h;
-        cout << x1 << endl;
-        if (fabs(func(x1)) < err) {
-            printf("After %d iterations, root = %20.15lf\n", i, x1);
-            return x1;
-        }
-        x0 = x1;
-    }
-    // root = x0;
-    return x1;
-}
-
-// double regula(int n, double x0, double x1, double x2, double x3, double err) {
-//     int itr = 0;
-//     regHelper(&x2, x0, x1, func(x0), func(x1), &itr);
-//     while (itr < n) {
-//         if (func(x0) * func(x2) < 0) {
-//             x1 = x2;
-//         } else {
-//             x0 = x2;
-//         }
-//         regHelper(&x3, x0, x1, func(x0), func(x1), &itr);
-//         if (fabs(x3 - x2) < err) {
-//             printf("After %d iterations, root = %20.15lf\n", itr, x3);
-//             return x3;
-//         }
-//         x2 = x3;
-//     }
-//     return 1;
-// }
-
-// void regHelper(double *x, double x0, double x1, double fx0, double fx1, int *itr) {
-//     *x = x0 - ((x1 - x0) / (fx1 - fx0)) * fx0;
-//     ++(*itr);
-// }

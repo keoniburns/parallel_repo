@@ -14,12 +14,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// #include "ex4accel.h"
-#include "ex4vel.h"
-// 100000000 -> 0.00001
-// 10000000 -> 0.0001
-// 1000000 -> 0.001
-#define partA (10000000)
+#include "ex4accel.h"
+// #include "ex4vel.h"
+
+#define partA (1000000)
 // io and mesasage passing protos
 void Build_mpi_type(double* a_p, double* b_p, int* n_p, MPI_Datatype* input_mpi_t_p);
 void Get_input(int my_rank, int comm_sz, double* a_p, double* b_p, int* n_p);
@@ -58,8 +56,8 @@ int main(void) {
      * starts at: */
     local_a = a + my_rank * local_n * h;
     local_b = local_a + local_n * h;
-
     double dt = (local_b - local_a) / local_n;
+
     if (my_rank == 0) {
         printf("delta t: %lf\n", dt);
     }
