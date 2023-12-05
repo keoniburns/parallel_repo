@@ -75,8 +75,10 @@ int main(int argc, char *argv[]) {
     audio.load(infile);
     audio.printSummary();
     const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
-    const long fftFrameSize = 612;                                   // FFT frame size
-    const long osamp = 32;                                           // STFT oversampling factor
+    /* this does not work all that well  */
+    // const long fftFrameSize = 612;                                  // FFT frame size
+    const long fftFrameSize = 512;  // FFT frame size
+    const long osamp = 32;          // STFT oversampling factor
     int bitD = audio.getBitDepth();
     const double sampleRate = audio.getSampleRate();  // Sample rate in Hz
     const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
