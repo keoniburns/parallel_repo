@@ -47,7 +47,7 @@
 
 #include "AudioFile.h"
 
-// #define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #define MAX_FRAME_LENGTH 8192
 using std::cout;
 using std::endl;
@@ -69,7 +69,7 @@ int main() {
     const long osamp = 16;                                           // STFT oversampling factor
     int bitD = audio.getBitDepth();
     const double sampleRate = audio.getSampleRate();  // Sample rate in Hz
-    const double pitchShift = 1.5;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
+    const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
     // Create input and output buffers
     double indata[audio.getNumSamplesPerChannel()];
     // vector<double> indata = audio.samples[0];
@@ -106,7 +106,7 @@ int main() {
     audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
     audio.setAudioBuffer(final);
     audio.setSampleRate(sampleRate);
-    audio.save("./myPanther.wav");
+    audio.save("./myPanther2x.wav");
     return 0;
 }
 
