@@ -62,7 +62,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 int main() {
     // Set up parameters
     AudioFile<double> audio;
-    audio.load("./sin_1000hz.wav");
+    audio.load("./PinkPanther30.wav");
+    audio.printSummary();
     const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
     const long fftFrameSize = 1024;                                  // FFT frame size
     const long osamp = 16;                                           // STFT oversampling factor
@@ -105,7 +106,7 @@ int main() {
     audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
     audio.setAudioBuffer(final);
     audio.setSampleRate(sampleRate);
-    audio.save("./mytest.wav");
+    audio.save("./myPanther.wav");
     return 0;
 }
 
