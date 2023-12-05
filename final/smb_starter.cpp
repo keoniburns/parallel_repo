@@ -43,6 +43,7 @@
 #include <cstring>
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 #include "AudioFile.h"
 
@@ -95,8 +96,8 @@ int main() {
 
     // printf("\nOutput data:\n");
     vector<vector<double>> out;
-    for (long i = 0; i < numSampsToProcess; i++) {
-        out[0][i] = outdata[i];
+    for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
+        out[0].push_back(outdata[i]);
         // cout << setprecision(15) << outdata[i] << endl;
     }
     audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
