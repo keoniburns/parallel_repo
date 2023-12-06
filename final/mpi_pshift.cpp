@@ -117,8 +117,7 @@ int main(int argc, char *argv[]) {
     cout << "rank " << my_rank << " has finished the doings" << endl;
 
     // this should aggregate all the arrays from every worker
-    MPI_Gather(local_outdata.data(), local_n, MPI_DOUBLE, global_outdata.data(), local_n, MPI_DOUBLE, 0,
-               MPI_COMM_WORLD);
+    MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
         vector<double> out;
