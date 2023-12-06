@@ -11,3 +11,7 @@ $$
   - where in its cycle
 - $f$ = frequency (pitch)
 - $t$ = time
+
+### omp stuff
+
+- set audio buffer, audiofile.h
