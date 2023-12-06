@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
     if (my_rank == 0) {
         vector<double> out;
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-            out.push_back(outdata[i]);
+            out.push_back(global_outdata[i]);
         }
 
         vector<vector<double>> final;
