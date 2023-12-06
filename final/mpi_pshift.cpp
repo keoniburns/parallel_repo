@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     loc_a = my_rank * local_n;
     loc_b = loc_a + local_n;
 
-    printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%d\n", my_rank, loc_a, loc_b, local_n);
+    printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
 
     // Create local input
     double loc_indata[(int)local_n];
@@ -112,12 +112,12 @@ int main(int argc, char *argv[]) {
     double global_outdata[audio.getNumSamplesPerChannel()];
 
     // Call the pitch shifting function
-    smbPitchShift(pitchShift, local_n, fftFrameSize, osamp, sampleRate, local_indata, local_outdata);
+    smbPitchShift(pitchShift, local_n, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
 
     cout << "rank " << my_rank << " has finished the doings" << endl;
 
     // this should aggregate all the arrays from every worker
-    MPI_Gather(local_outdata.data(), local_n, MPI_DOUBLE, global_outdata.data(), local_n, 0, MPI_COMM_WORLD);
+    MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
         vector<double> out;
