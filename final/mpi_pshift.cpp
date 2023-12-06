@@ -1,42 +1,16 @@
-/****************************************************************************
+/**
+ * @file mpi_pshift.cpp
+ * @author your name (you@domain.com)
+ * @brief
+ * @version 0.1
+ * @date 2023-12-05
  *
- * NAME: smbPitchShift.cpp
- * VERSION: 1.2
- * HOME URL: http://blogs.zynaptiq.com/bernsee
- * KNOWN BUGS: none
+ * @copyright Copyright (c) 2023
  *
- * SYNOPSIS: Routine for doing pitch shifting while maintaining
- * duration using the Short Time Fourier Transform.
- *
- * DESCRIPTION: The routine takes a pitchShift factor value which is between 0.5
- * (one octave down) and 2. (one octave up). A value of exactly 1 does not change
- * the pitch. numSampsToProcess tells the routine how many samples in indata[0...
- * numSampsToProcess-1] should be pitch shifted and moved to outdata[0 ...
- * numSampsToProcess-1]. The two buffers can be identical (ie. it can process the
- * data in-place). fftFrameSize defines the FFT frame size used for the
- * processing. Typical values are 1024, 2048 and 4096. It may be any value <=
- * MAX_FRAME_LENGTH but it MUST be a power of 2. osamp is the STFT
- * oversampling factor which also determines the overlap between adjacent STFT
- * frames. It should at least be 4 for moderate scaling ratios. A value of 32 is
- * recommended for best quality. sampleRate takes the sample rate for the signal
- * in unit Hz, ie. 44100 for 44.1 kHz audio. The data passed to the routine in
- * indata[] should be in the range [-1.0, 1.0), which is also the output range
- * for the data, make sure you scale the data accordingly (for 16bit signed integers
- * you would have to divide (and multiply) by 32768).
- *
- * COPYRIGHT 1999-2015 Stephan M. Bernsee <s.bernsee [AT] zynaptiq [DOT] com>
- *
- * 						The Wide Open License (WOL)
- *
- * Permission to use, copy, modify, distribute and sell this software and its
- * documentation for any purpose is hereby granted without fee, provided that
- * the above copyright notice and this license appear in all source copies.
- * THIS SOFTWARE IS PROVIDED "AS IS" WITHOUT EXPRESS OR IMPLIED WARRANTY OF
- * ANY KIND. See http://www.dspguru.com/wol.htm for more information.
- *
- *****************************************************************************/
-
+ */
 #include <math.h>
+#include <mpi.h>
+#include <omp.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -61,77 +35,122 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
-    // Set up parameters
+    // command line args else is for quick testing
     string infile, outfile;
     if (argc > 1) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "./PinkPanther30.wav";
-        outfile = "./myPanther2x.wav";
+        infile = "./sounds/sin_1000hz.wav";
+        outfile = "./sounds/sin2x.wav";
     }
 
+    // audio I/O library functions
     AudioFile<double> audio;
     audio.load(infile);
     audio.printSummary();
-    const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
-    /* this does not work all that well  */
-    // const long fftFrameSize = 612;                                  // FFT frame size
-    const long fftFrameSize = 512;  // FFT frame size
+    // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
+
+    /* MPI vars */
+    int my_rank, comm_sz, n;
+    long local_n;
+    double a, b, step_size, loc_a, loc_b;
+
+    /* Let the system do what it needs to start up MPI */
+    MPI_Init(NULL, NULL);
+
+    /* Get my process rank */
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
+    cout << "total number of workers is " << comm_sz << endl;
+
+    /* need to figure out what to do about residuals */
+    n = audio.getNumSamplesPerChannel();
+    local_n = (long)(n / comm_sz);  // tot_samples/tot_workers = num samples per worker
+
+    if (!(local_n % comm_sz)) {  // i think this will add residuals to the last worker
+        if (my_rank == comm_sz - 1) {
+            cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
+            local_n += (local_n % comm_sz);
+        }
+    }
+    loc_a = my_rank * local_n;
+    loc_b = loc_a + local_n;
+
+    printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%d\n", my_rank, loc_a, loc_b, local_n);
+
+    // Create local input
+    double loc_indata[(int)local_n];
+    for (int i = loc_a; i < local_n; i++) {
+        loc_indata[i] = audio.samples[0][i];
+    }
+
+    // step size is defined below as frame/osamp
+    /* this needs to fit regardless of our number of workers */
+    /** must be a multiple of 2
+     * 64
+     * 128
+     * 256
+     * 512
+     * 1024
+     * 2048
+     * 4096
+     * 8192
+     */
+    const long fftFrameSize = 256;  // FFT frame size
     const long osamp = 32;          // STFT oversampling factor
+
+    // no idea what the fuck this does
     int bitD = audio.getBitDepth();
+
+    // we need these to determine the frequency i believe
     const double sampleRate = audio.getSampleRate();  // Sample rate in Hz
     const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
-    // Create input and output buffers
-    double indata[audio.getNumSamplesPerChannel()];
-    // vector<double> indata = audio.samples[0];
-    cout << "bit depth is: " << bitD << endl;
 
-    for (int i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-        indata[i] = audio.samples[0][i];
-    }
-
-    double outdata[audio.getNumSamplesPerChannel()];
-
-    // Initialize input buffer with some data (for demonstration purposes)
-    // for (long i = 0; i < numSampsToProcess; i++) {
-    //     indata[i] = sin(2.0 * M_PI * 440.0 * i / sampleRate);  // A simple sine wave at 440 Hz
-    // }
+    double local_outdata[local_n];
+    double global_outdata[audio.getNumSamplesPerChannel()];
 
     // Call the pitch shifting function
-    smbPitchShift(pitchShift, numSampsToProcess, fftFrameSize, osamp, sampleRate, indata, outdata);
+    smbPitchShift(pitchShift, local_n, fftFrameSize, osamp, sampleRate, local_indata, local_outdata);
 
-    // Process the output data as needed (in this example, we print the results)
-    // printf("Input data:\n");
-    // for (long i = 0; i < numSampsToProcess; i++) {
-    //     printf("%f ", indata[i]);
-    // }
+    cout << "rank " << my_rank << " has finished the doings" << endl;
 
-    // printf("\nOutput data:\n");
-    vector<double> out;
-    for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-        out.push_back(outdata[i]);
-        // cout << setprecision(15) << outdata[i] << endl;
+    // this should aggregate all the arrays from every worker
+    MPI_Gather(local_outdata.data(), local_n, MPI_DOUBLE, global_outdata.data(), local_n, 0, MPI_COMM_WORLD);
+
+    if (my_rank == 0) {
+        vector<double> out;
+        for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
+            out.push_back(outdata[i]);
+        }
+
+        vector<vector<double>> final;
+        final.push_back(out);
+        audio.setAudioBufferSize(audio.getNumChannels(), audio.getNumSamplesPerChannel());
+        audio.setAudioBuffer(final);
+        audio.setSampleRate(sampleRate);
+        audio.save(outfile);
     }
-    vector<vector<double>> final;
-    final.push_back(out);
-    audio.setAudioBufferSize(audio.getNumChannels(), numSampsToProcess);
-    audio.setAudioBuffer(final);
-    audio.setSampleRate(sampleRate);
-    audio.save(outfile);
+
+    MPI_Finalize();
     return 0;
 }
 
-// -----------------------------------------------------------------------------------------------------------------
-
-/*
-    Routine smbPitchShift(). See top of file for explanation
-    Purpose: doing pitch shifting while maintaining duration using the Short
-    Time Fourier Transform.
-    Author: (c)1999-2015 Stephan M. Bernsee <s.bernsee [AT] zynaptiq [DOT] com>
-*/
+/**
+ * @brief we need to break the number of samples up per worker and pass them into this function
+ *
+ * @param pitchShift determines how high or low the shift is
+ * @param numSampsToProcess total samples
+ * @param fftFrameSize
+ * @param osamp
+ * @param sampleRate how we determine discrete frequency values
+ * @param indata
+ * @param outdata
+ */
 void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize, long osamp, double sampleRate,
                    double *indata, double *outdata) {
+    /* whole lotta variables for whatever reason */
     static double gInFIFO[MAX_FRAME_LENGTH];
     static double gOutFIFO[MAX_FRAME_LENGTH];
     static double gFFTworksp[2 * MAX_FRAME_LENGTH];
@@ -143,6 +162,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     static double gSynFreq[MAX_FRAME_LENGTH];
     static double gSynMagn[MAX_FRAME_LENGTH];
     static long gRover = false, gInit = false;
+
+    /* these actually matter for the calculation of the sample */
     double magn, phase, tmp, window, real, imag;
     double freqPerBin, expct;
     long i, k, qpd, index, inFifoLatency, stepSize, fftFrameSize2;
@@ -169,6 +190,10 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     }
 
     /* main processing loop */
+    /**
+     * @brief i believe this is the main split for mpi where we will take the total number of samples
+     * and divide it up by n workers and i think it'll work
+     */
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
@@ -179,7 +204,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
         if (gRover >= fftFrameSize) {
             gRover = inFifoLatency;
 
-            /* do windowing and re,im interleave */
+            /* This is where we make our windows so im thinking we can just leave this as is */
             for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
                 gFFTworksp[2 * k] = gInFIFO[k] * window;
@@ -288,19 +313,13 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     }
 }
 
-// -----------------------------------------------------------------------------------------------------------------
-
-/*
-    FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
-    Fills fftBuffer[0...2*fftFrameSize-1] with the Fourier transform of the
-    time domain data in fftBuffer[0...2*fftFrameSize-1]. The FFT array takes
-    and returns the cosine and sine parts in an interleaved manner, ie.
-    fftBuffer[0] = cosPart[0], fftBuffer[1] = sinPart[0], asf. fftFrameSize
-    must be a power of 2. It expects a complex input signal (see footnote 2),
-    ie. when working with 'common' audio signals our input signal has to be
-    passed as {in[0],0.,in[1],0.,in[2],0.,...} asf. In that case, the transform
-    of the frequencies of interest is in fftBuffer[0...fftFrameSize].
-*/
+/**
+ * @brief
+ *
+ * @param fftBuffer
+ * @param fftFrameSize
+ * @param sign
+ */
 void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
     double wr, wi, arg, *p1, *p2, temp;
     double tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
@@ -354,38 +373,4 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
     }
 }
 
-// -----------------------------------------------------------------------------------------------------------------
-
-/*
-
-    12/12/02, smb
-
-    PLEASE NOTE:
-
-    There have been some reports on domain errors when the atan2() function was used
-    as in the above code. Usually, a domain error should not interrupt the program flow
-    (maybe except in Debug mode) but rather be handled "silently" and a global variable
-    should be set according to this error. However, on some occasions people ran into
-    this kind of scenario, so a replacement atan2() function is provided here.
-
-    If you are experiencing domain errors and your program stops, simply replace all
-    instances of atan2() with calls to the smbAtan2() function below.
-
-*/
-
-double smbAtan2(double x, double y) {
-    double signx;
-    if (x > 0.)
-        signx = 1.;
-    else
-        signx = -1.;
-
-    if (x == 0.) return 0.;
-    if (y == 0.) return signx * M_PI / 2.;
-
-    return atan2(x, y);
-}
-
-// -----------------------------------------------------------------------------------------------------------------
-// -----------------------------------------------------------------------------------------------------------------
-// -----------------------------------------------------------------------------------------------------------------
+/* MPI functions */
