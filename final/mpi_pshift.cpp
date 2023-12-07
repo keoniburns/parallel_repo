@@ -114,15 +114,16 @@ int main(int argc, char *argv[]) {
     const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
 
     double local_outdata[local_n];
+    double global_outdata[comm_sz * local_n];
 
     // Call the pitch shifting function
     smbPitchShift(pitchShift, local_n, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
 
     cout << "rank " << my_rank << " has finished the doings" << endl;
 
-    if (my_rank == 0) {
-        double global_outdata[local_n * comm_sz];
-    }
+    // if (my_rank == 0) {
+    //     global_outdata.resize(comm_sz * local_outdata)
+    // }
 
     // this should aggregate all the arrays from every worker
     MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -131,7 +132,6 @@ int main(int argc, char *argv[]) {
         vector<double> out;
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
             out.push_back(global_outdata[i]);
-            cout << global_outdata[i] << endl;
         }
 
         vector<vector<double>> final;
