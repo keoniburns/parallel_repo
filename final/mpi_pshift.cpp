@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
     }
 
     // this should aggregate all the arrays from every worker
-    MPI_Gather(local_outdata, local_outdata.length(), MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0,
+    MPI_Gather(local_outdata, local_outdata.size(), MPI_DOUBLE, global_outdata, local_outdata.size(), MPI_DOUBLE, 0,
                MPI_COMM_WORLD);
 
     if (my_rank == 0) {
