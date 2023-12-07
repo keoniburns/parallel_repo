@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
     cout << "total number of workers is " << comm_sz << endl;
     // command line args else is for quick testing
-    // string infile, outfile;
+    string infile, outfile;
     // if (argc > 1) {
     //     infile = argv[1];
     //     outfile = argv[2];
