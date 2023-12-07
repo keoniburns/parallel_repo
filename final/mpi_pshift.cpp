@@ -35,6 +35,10 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
+    int my_rank, comm_sz, n;
+    long local_n;
+    double a, b, step_size, loc_a, loc_b;
+
     MPI_Init(NULL, NULL);
 
     /* Get my process rank */
@@ -59,9 +63,6 @@ int main(int argc, char *argv[]) {
     // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
 
     /* MPI vars */
-    int my_rank, comm_sz, n;
-    long local_n;
-    double a, b, step_size, loc_a, loc_b;
 
     /* Let the system do what it needs to start up MPI */
 
