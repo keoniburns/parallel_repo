@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     long local_n;
     double a, b, step_size, loc_a, loc_b;
 
-    MPI_Init(NULL, NULL);
+    MPI_Init(&argc, &argv);
 
     /* Get my process rank */
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
