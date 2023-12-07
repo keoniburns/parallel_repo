@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
     cout << "rank " << my_rank << " has finished the doings" << endl;
 
     if (my_rank == 0) {
-        double global_outdata[local_outdata.size() * comm_sz];
+        double global_outdata[local_n * comm_sz];
     }
 
     // this should aggregate all the arrays from every worker
