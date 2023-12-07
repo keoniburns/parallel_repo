@@ -131,6 +131,7 @@ int main(int argc, char *argv[]) {
     if (my_rank == 0) {
         vector<double> out;
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
+            cout << global_outdata[i] << endl;
             out.push_back(global_outdata[i]);
         }
 
