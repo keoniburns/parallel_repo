@@ -35,6 +35,13 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
+    MPI_Init(NULL, NULL);
+
+    /* Get my process rank */
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
+    cout << "total number of workers is " << comm_sz << endl;
     // command line args else is for quick testing
     string infile, outfile;
     if (argc > 1) {
@@ -57,13 +64,6 @@ int main(int argc, char *argv[]) {
     double a, b, step_size, loc_a, loc_b;
 
     /* Let the system do what it needs to start up MPI */
-    MPI_Init(NULL, NULL);
-
-    /* Get my process rank */
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-
-    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
-    cout << "total number of workers is " << comm_sz << endl;
 
     /* need to figure out what to do about residuals */
     n = audio.getNumSamplesPerChannel();
