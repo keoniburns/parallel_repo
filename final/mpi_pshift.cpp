@@ -60,10 +60,6 @@ int main(int argc, char *argv[]) {
     AudioFile<double> audio;
     audio.load(infile);
 
-    if (my_rank == 0) {
-        audio.printSummary();
-        cout << "total number of workers is " << comm_sz << endl;
-    }
     // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
 
     /* MPI vars */
@@ -84,6 +80,10 @@ int main(int argc, char *argv[]) {
     loc_b = loc_a + local_n;
 
     printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
+    if (my_rank == 0) {
+        audio.printSummary();
+        cout << "total number of workers is " << comm_sz << endl;
+    }
 
     // Create local input
     double loc_indata[(int)local_n];
