@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
-    cout << "total number of workers is " << comm_sz << endl;
+
     // command line args else is for quick testing
     string infile, outfile;
     if (argc > 1) {
@@ -59,7 +59,11 @@ int main(int argc, char *argv[]) {
     // audio I/O library functions
     AudioFile<double> audio;
     audio.load(infile);
-    audio.printSummary();
+
+    if (my_rank == 0) {
+        audio.printSummary();
+        cout << "total number of workers is " << comm_sz << endl;
+    }
     // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
 
     /* MPI vars */
@@ -70,7 +74,7 @@ int main(int argc, char *argv[]) {
     n = audio.getNumSamplesPerChannel();
     local_n = (long)(n / comm_sz);  // tot_samples/tot_workers = num samples per worker
 
-    if (!(local_n % comm_sz)) {  // i think this will add residuals to the last worker
+    if (!(n % comm_sz)) {  // i think this will add residuals to the last worker
         if (my_rank == comm_sz - 1) {
             cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
             local_n += (local_n % comm_sz);
