@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 
     cout << "size of n" << endl;
     cout << "n/comm_sz = " << local_n;
-    l if (!(n % comm_sz)) {  // i think this will add residuals to the last worker
+    if (!(n % comm_sz)) {  // i think this will add residuals to the last worker
         if (my_rank == comm_sz - 1) {
             cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
             local_n += (local_n % comm_sz);
