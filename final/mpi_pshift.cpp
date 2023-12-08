@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
 
     // Create local input
     double loc_indata[(int)local_n];
-    for (int i = loc_a; i < local_n; i++) {
+    for (int i = loc_a; i < local_b; i++) {
         loc_indata[i] = audio.samples[0][i];
     }
 
