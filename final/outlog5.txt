@@ -1,0 +1,37 @@
+size of n
+n/comm_sz = 330750n mod comm_sz: 0
+2 residuals added to worker 3
+my_rank=3, start a=992256.000000, end b=1323008.000000, and step_size=330752
+size of n
+n/comm_sz = 330750n mod comm_sz: 0
+my_rank=2, start a=661500.000000, end b=992250.000000, and step_size=330750
+size of n
+n/comm_sz = 330750n mod comm_sz: 0
+my_rank=1, start a=330750.000000, end b=661500.000000, and step_size=330750
+size of n
+n/comm_sz = 330750n mod comm_sz: 0
+my_rank=0, start a=0.000000, end b=330750.000000, and step_size=330750
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 2 PID 242011 RUNNING AT o244-13
+=   KILLED BY SIGNAL: 9 (Killed)
+===================================================================================
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 3 PID 242012 RUNNING AT o244-13
+=   KILLED BY SIGNAL: 11 (Segmentation fault)
+===================================================================================
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 0 PID 204712 RUNNING AT o244-12
+=   KILLED BY SIGNAL: 9 (Killed)
+===================================================================================
+
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   RANK 1 PID 204713 RUNNING AT o244-12
+=   KILLED BY SIGNAL: 9 (Killed)
+===================================================================================
