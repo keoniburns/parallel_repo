@@ -67,8 +67,8 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "./PinkPanther30.wav";
-        outfile = "./myPanther2x.wav";
+        infile = "./StarWars60.wav";
+        outfile = "./parallel.wav";
     }
 
     AudioFile<double> audio;
