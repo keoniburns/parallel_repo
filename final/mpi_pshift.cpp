@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     // Create local input
     double loc_indata[local_n];
     for (long i = 0; i < local_n; i++) {
-        loc_indata[i] = audio.samples[0][i += loc_a];
+        loc_indata[i] = audio.samples[0][i + loc_a];
     }
 
     // step size is defined below as frame/osamp
