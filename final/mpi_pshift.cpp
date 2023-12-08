@@ -35,8 +35,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
-    int my_rank, comm_sz, n;
-    long local_n;
+    int my_rank, comm_sz;
+    long local_n, n;
     double a, b, step_size, loc_a, loc_b;
 
     MPI_Init(NULL, NULL);
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 
     /* need to figure out what to do about residuals */
     n = audio.getNumSamplesPerChannel();
-    local_n = (long)(n / comm_sz);  // tot_samples/tot_workers = num samples per worker
+    local_n = (n / comm_sz);  // tot_samples/tot_workers = num samples per worker
 
     cout << "size of n" << endl;
     cout << "n/comm_sz = " << local_n;
@@ -92,8 +92,8 @@ int main(int argc, char *argv[]) {
     printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
 
     // Create local input
-    double loc_indata[(int)local_n];
-    for (int i = 0; i < local_n; i++) {
+    double loc_indata[local_n];
+    for (long i = 0; i < local_n; i++) {
         loc_indata[i] = audio.samples[0][i += loc_a];
     }
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
     const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
 
     double local_outdata[local_n];
-    int outSize = sizeof(local_outdata) / sizeof(double);
+    long outSize = sizeof(local_outdata) / sizeof(double);
     double global_outdata[comm_sz * local_n];
 
     // Call the pitch shifting function
