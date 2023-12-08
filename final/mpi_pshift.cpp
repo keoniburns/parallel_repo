@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
 
     cout << "size of n" << endl;
     cout << "n/comm_sz = " << local_n;
+    cout << "n mod comm_sz: " << (n % comm_sz) << endl;
 
     /* why the fuck am i getting residuals */
     if (!(n % comm_sz)) {  // i think this will add residuals to the last worker
