@@ -76,12 +76,15 @@ int main(int argc, char *argv[]) {
 
     cout << "size of n" << endl;
     cout << "n/comm_sz = " << local_n;
+
+    /* why the fuck am i getting residuals */
     if (!(n % comm_sz)) {  // i think this will add residuals to the last worker
         if (my_rank == comm_sz - 1) {
             cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
             local_n += (local_n % comm_sz);
         }
     }
+
     loc_a = my_rank * local_n;
     loc_b = loc_a + local_n;
 
@@ -89,8 +92,8 @@ int main(int argc, char *argv[]) {
 
     // Create local input
     double loc_indata[(int)local_n];
-    for (int i = loc_a; i < loc_b; i++) {
-        loc_indata[i] = audio.samples[0][i];
+    for (int i = 0; i < local_n; i++) {
+        loc_indata[i] = audio.samples[0][i += loc_a];
     }
 
     // step size is defined below as frame/osamp
