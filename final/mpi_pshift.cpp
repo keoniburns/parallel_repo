@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "./sounds/sin_1000hz.wav";
-        outfile = "./sounds/sin2x.wav";
+        infile = "./sounds/StarWars60.wav";
+        outfile = "./sounds/StarwarSequential.wav";
     }
 
     // audio I/O library functions
