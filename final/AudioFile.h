@@ -372,12 +372,12 @@ bool AudioFile<T>::setAudioBuffer(AudioBuffer& newBuffer) {
 
     // set the number of channels
     samples.resize(newBuffer.size());
-#pragma omp parallel for
+    // #pragma omp parallel for
     for (int k = 0; k < getNumChannels(); k++) {
         assert(newBuffer[k].size() == numSamples);
 
         samples[k].resize(numSamples);
-#pragma omp for
+        // #pragma omp for
         for (size_t i = 0; i < numSamples; i++) {
             samples[k][i] = newBuffer[k][i];
         }
