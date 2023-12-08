@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     long local_n;
     double a, b, step_size, loc_a, loc_b;
 
-    MPI_Init(&argc, &argv);
+    MPI_Init(NULL, NULL);
 
     /* Get my process rank */
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
@@ -60,10 +60,10 @@ int main(int argc, char *argv[]) {
     AudioFile<double> audio;
     audio.load(infile);
 
-    if (my_rank == 0) {
-        audio.printSummary();
-        cout << "total number of workers is " << comm_sz << endl;
-    }
+    // if (my_rank == 0) {
+    //     audio.printSummary();
+    //     cout << "total number of workers is " << comm_sz << endl;
+    // }
     // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
 
     /* MPI vars */
