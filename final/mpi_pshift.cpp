@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "./sounds/StarWars60.wav";
+        infile = "sounds/StarWars60.wav";
         outfile = "./sounds/StarwarSequential.wav";
     }
 
