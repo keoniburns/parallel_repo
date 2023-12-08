@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     const double pitchShift = 2.0;                    // Pitch shift factor (e.g., 1.5 for an upward shift)
 
     double local_outdata[local_n];
-    int outSize = local_outdata.size();
+    int outSize = local_outdata.length();
     double global_outdata[comm_sz * local_n];
 
     // Call the pitch shifting function
