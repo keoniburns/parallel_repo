@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "sounds/StarWars60.wav";
-        outfile = "./sounds/StarwarSequential.wav";
+        infile = "sounds/5min1000hz.wav";
+        outfile = "./sounds/5minMPI.wav";
     }
 
     // audio I/O library functions
@@ -274,7 +274,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* ***************** PROCESSING ******************* */
             /* this does the actual pitch shifting */
             memset(gSynMagn, 0, fftFrameSize * sizeof(double));
-            memset(gSynFreq, 0, fftFrameSize * sizeof(double);
+            memset(gSynFreq, 0, fftFrameSize * sizeof(double));
 #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 index = k * pitchShift;
@@ -320,16 +320,16 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* do inverse transform */
             smbFft(gFFTworksp, fftFrameSize, 1);
 
-/* do windowing and add to output accumulator NUM_THREADS/
-#pragma omp parallel for num_threads(4)
-            for (k = 0; k < fftFrameSize; k++) {
-                window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
-                gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
-            }
-#pragma omp parallel for num_threads(NUM_THREADS)
-            for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
+            /* do windowing and add to output accumulator NUM_THREADS/
+            #pragma omp parallel for num_threads(4)
+                        for (k = 0; k < fftFrameSize; k++) {
+                            window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
+                            gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
+                        }
+            #pragma omp parallel for num_threads(NUM_THREADS)
+                        for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
 
-            /* shift accumulator */
+                        /* shift accumulator */
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
 /* move input FIFO */
