@@ -213,7 +213,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
  * @brief i believe this is the main split for mpi where we will take the total number of samples
  * and divide it up by n workers and i think it'll work
  */
-#pragma omp parallel for num_threads(NUM_THREADS) collapse(2)
+#pragma omp parallel for num_threads(NUM_THREADS)
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
