@@ -139,8 +139,9 @@ int main(int argc, char *argv[]) {
 
     if (my_rank == 0) {
         vector<double> out;
+#pragma omp parallel for num_threads(NUM_THREADS)
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-            // cout << setprecision(15) << global_outdata[i] << endl;
+            cout << setprecision(15) << global_outdata[i] << endl;
             out.push_back(global_outdata[i]);
         }
 
@@ -213,7 +214,10 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
  * @brief i believe this is the main split for mpi where we will take the total number of samples
  * and divide it up by n workers and i think it'll work
  */
-#pragma omp parallel for num_threads(NUM_THREADS)
+// #pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for num_threads(NUM_THREADS)                                                                \
+    shared(gInFIFO, gOutFIFO, gRover, gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq, gSynMagn, gSynFreq, gSumPhase, \
+               gOutputAccum) private(i, k, window, real, imag, magn, phase, tmp, qpd, index)
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
