@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 
     if (my_rank == 0) {
         vector<double> out;
-#pragma omp parallel for num_threads(NUM_THREADS)
+        // #pragma omp parallel for num_threads(NUM_THREADS)
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
             cout << setprecision(15) << global_outdata[i] << endl;
             out.push_back(global_outdata[i]);
