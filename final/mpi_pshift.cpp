@@ -208,11 +208,12 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
         gInit = true;
     }
 
-    /* main processing loop */
-    /**
-     * @brief i believe this is the main split for mpi where we will take the total number of samples
-     * and divide it up by n workers and i think it'll work
-     */
+/* main processing loop */
+/**
+ * @brief i believe this is the main split for mpi where we will take the total number of samples
+ * and divide it up by n workers and i think it'll work
+ */
+#pragma omp parallel for num_threads(NUM_THREADS) collapse(2)
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
@@ -222,7 +223,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
         /* now we have enough data for processing */
         if (gRover >= fftFrameSize) {
             gRover = inFifoLatency;
-#pragma omp parallel for num_threads(NUM_THREADS)
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             /* This is where we make our windows so im thinking we can just leave this as is */
             for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
@@ -234,7 +235,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* do transform */
             smbFft(gFFTworksp, fftFrameSize, -1);
 
-#pragma omp parallel for num_threads(NUM_THREADS)
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             /* this is the analysis step */
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* de-interlace FFT buffer */
@@ -275,7 +276,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* this does the actual pitch shifting */
             memset(gSynMagn, 0, fftFrameSize * sizeof(double));
             memset(gSynFreq, 0, fftFrameSize * sizeof(double));
-#pragma omp parallel for num_threads(NUM_THREADS)
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 index = k * pitchShift;
                 if (index <= fftFrameSize2) {
@@ -284,9 +285,9 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 }
             }
 
-/* ***************** SYNTHESIS ******************* */
-/* this is the synthesis step */
-#pragma omp parallel for num_threads(NUM_THREADS)
+            /* ***************** SYNTHESIS ******************* */
+            /* this is the synthesis step */
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* get magnitude and true frequency from synthesis arrays */
                 magn = gSynMagn[k];
@@ -313,8 +314,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 gFFTworksp[2 * k + 1] = magn * sin(phase);
             }
 
-/* zero negative frequencies */
-#pragma omp parallel for num_threads(NUM_THREADS)
+            /* zero negative frequencies */
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
@@ -332,8 +333,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                         /* shift accumulator */
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
-/* move input FIFO */
-#pragma omp parallel for num_threads(NUM_THREADS)
+            /* move input FIFO */
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k < inFifoLatency; k++) gInFIFO[k] = gInFIFO[k + stepSize];
         }
     }
