@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "sounds/5min1000hz.wav";
+        infile = "sounds/5min.wav";
         outfile = "./5minSeq.wav";
     }
 
