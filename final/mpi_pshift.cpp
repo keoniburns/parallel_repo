@@ -357,7 +357,6 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
     double tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
     long i, bitm, j, le, le2, k;
 
-#pragma omp parallel for num_threads(NUM_THREADS) collspse(2)
     for (i = 2; i < 2 * fftFrameSize - 2; i += 2) {
         for (bitm = 2, j = 0; bitm < 2 * fftFrameSize; bitm <<= 1) {
             if (i & bitm) j++;
