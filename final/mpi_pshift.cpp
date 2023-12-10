@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
         vector<double> out;
         // #pragma omp parallel for num_threads(NUM_THREADS)
         for (long i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-            cout << setprecision(15) << global_outdata[i] << endl;
+            // cout << setprecision(15) << global_outdata[i] << endl;
             out.push_back(global_outdata[i]);
         }
 
@@ -239,7 +239,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* do transform */
             smbFft(gFFTworksp, fftFrameSize, -1);
 
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for num_threads(NUM_THREADS)
             /* this is the analysis step */
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* de-interlace FFT buffer */
@@ -280,7 +280,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* this does the actual pitch shifting */
             memset(gSynMagn, 0, fftFrameSize * sizeof(double));
             memset(gSynFreq, 0, fftFrameSize * sizeof(double));
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 index = k * pitchShift;
                 if (index <= fftFrameSize2) {
@@ -289,9 +289,9 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 }
             }
 
-            /* ***************** SYNTHESIS ******************* */
-            /* this is the synthesis step */
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+/* ***************** SYNTHESIS ******************* */
+/* this is the synthesis step */
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* get magnitude and true frequency from synthesis arrays */
                 magn = gSynMagn[k];
@@ -318,23 +318,23 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 gFFTworksp[2 * k + 1] = magn * sin(phase);
             }
 
-            /* zero negative frequencies */
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+/* zero negative frequencies */
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
             smbFft(gFFTworksp, fftFrameSize, 1);
 
-            /* do windowing and add to output accumulator NUM_THREADS/
-            #pragma omp parallel for num_threads(4)
-                        for (k = 0; k < fftFrameSize; k++) {
-                            window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
-                            gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
-                        }
-            #pragma omp parallel for num_threads(NUM_THREADS)
-                        for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
+/* do windowing and add to output accumulator NUM_THREADS*/
+#pragma omp parallel for num_threads(NUM_THREADS)
+            for (k = 0; k < fftFrameSize; k++) {
+                window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
+                gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
+            }
+#pragma omp parallel for num_threads(NUM_THREADS)
+            for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
 
-                        /* shift accumulator */
+            /* shift accumulator */
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
             /* move input FIFO */
