@@ -125,8 +125,8 @@ int main(int argc, char *argv[]) {
     long outSize = sizeof(local_outdata) / sizeof(double);
     double global_outdata[comm_sz * local_n];
 
-// Call the pitch shifting function
-#pragma omp parallel num_threads(NUM_THREADS)
+    // Call the pitch shifting function
+    // #pragma omp parallel num_threads(NUM_THREADS)
     smbPitchShift(pitchShift, outSize, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
 
     cout << "rank " << my_rank << " has finished the doings" << endl;
