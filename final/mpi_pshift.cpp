@@ -385,12 +385,12 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
         arg = M_PI / (le2 >> 1);
         wr = cos(arg);
         wi = sign * sin(arg);
+#pragma omp parallel for num_threads(NUM_THREADS) collapse(2)
         for (j = 0; j < le2; j += 2) {
             p1r = fftBuffer + j;
             p1i = p1r + 1;
             p2r = p1r + le2;
             p2i = p2r + 1;
-#pragma omp parallel for num_threads(NUM_THREADS) collapse(2)
 
             for (i = j; i < 2 * fftFrameSize; i += le) {
                 tr = *p2r * ur - *p2i * ui;
