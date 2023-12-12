@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
         infile = argv[1];
         outfile = argv[2];
     } else {
-        infile = "sounds/5min.wav";
+        infile = "./sounds/5min.wav";
         outfile = "./sounds/5minMPI.wav";
     }
 
