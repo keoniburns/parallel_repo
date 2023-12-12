@@ -228,7 +228,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
         /* now we have enough data for processing */
         if (gRover >= fftFrameSize) {
             gRover = inFifoLatency;
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for num_threads(NUM_THREADS) private(k, window) shared(fftFrameSize, gFFTworksp)
             /* This is where we make our windows so im thinking we can just leave this as is */
             for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
@@ -238,10 +238,13 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 
             /* ***************** ANALYSIS ******************* */
             /* do transform */
+
             smbFft(gFFTworksp, fftFrameSize, -1);
 
-            // #pragma omp parallel for num_threads(NUM_THREADS)
-            /* this is the analysis step */
+// #pragma omp parallel for num_threads(NUM_THREADS)
+/* this is the analysis step */
+#pragma omp parallel for num_threads(NUM_THREADS) private(k, real, imag, magn, phase, tmp, qpd) \
+    shared(gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq)
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* de-interlace FFT buffer */
                 real = gFFTworksp[2 * k];
