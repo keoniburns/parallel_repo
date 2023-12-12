@@ -1,0 +1,37 @@
+size of n
+n/comm_sz = 3307968n mod comm_sz: 0
+my_rank=1, start a=3307968.000000, end b=6615936.000000, and step_size=3307968
+size of n
+n/comm_sz = 3307968n mod comm_sz: 0
+my_rank=3, start a=9923904.000000, end b=13231872.000000, and step_size=3307968
+size of n
+n/comm_sz = 3307968n mod comm_sz: 0
+my_rank=0, start a=0.000000, end b=3307968.000000, and step_size=3307968
+size of n
+n/comm_sz = 3307968n mod comm_sz: 0
+my_rank=2, start a=6615936.000000, end b=9923904.000000, and step_size=3307968
+rank 3 has finished the doings
+rank 1 has finished the doings
+rank 0 has finished the doings
+rank 2 has finished the doings
+size of n
+n/comm_sz = 2646374n mod comm_sz: 2
+my_rank=3, start a=7939122.000000, end b=10585496.000000, and step_size=2646374
+size of n
+n/comm_sz = 2646374n mod comm_sz: 2
+my_rank=0, start a=0.000000, end b=2646374.000000, and step_size=2646374
+size of n
+n/comm_sz = 2646374n mod comm_sz: 2
+my_rank=1, start a=2646374.000000, end b=5292748.000000, and step_size=2646374
+size of n
+n/comm_sz = 2646374n mod comm_sz: 2
+my_rank=2, start a=5292748.000000, end b=7939122.000000, and step_size=2646374
+size of n
+n/comm_sz = 2646374n mod comm_sz: 2
+4 residuals added to worker 4
+my_rank=4, start a=10585512.000000, end b=13231890.000000, and step_size=2646378
+rank 3 has finished the doings
+rank 1 has finished the doings
+rank 0 has finished the doings
+rank 2 has finished the doings
+rank 4 has finished the doings
