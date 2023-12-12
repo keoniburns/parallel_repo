@@ -396,6 +396,9 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
             for (i = j; i < 2 * fftFrameSize; i += le) {
                 tr = *p2r * ur - *p2i * ui;
                 ti = *p2r * ui + *p2i * ur;
+                cout << "i : " << i << endl;
+                cout << "   tr : " << tr << endl;
+                cout << "   ti : " << ti << endl;
                 *p2r = *p1r - tr;
                 *p2i = *p1i - ti;
                 *p1r += tr;
