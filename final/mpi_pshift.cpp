@@ -284,7 +284,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* this does the actual pitch shifting */
             memset(gSynMagn, 0, fftFrameSize * sizeof(double));
             memset(gSynFreq, 0, fftFrameSize * sizeof(double));
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for num_threads(NUM_THREADS) \
+    shared(gSynMagn, gAnaMagn, gSynFreq, gAnaFreq, pitchShift) private(index, k)
             for (k = 0; k <= fftFrameSize2; k++) {
                 index = k * pitchShift;
                 if (index <= fftFrameSize2) {
