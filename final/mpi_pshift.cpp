@@ -377,6 +377,7 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
             *p2 = temp;
         }
     }
+#pragma omp parallel for num_threads(NUM_THREADS) collapse(3)
     for (k = 0, le = 2; k < (long)(log(fftFrameSize) / log(2.) + .5); k++) {
         le <<= 1;
         le2 = le >> 1;
