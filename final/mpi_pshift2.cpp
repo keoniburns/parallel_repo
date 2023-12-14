@@ -253,12 +253,14 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* ***************** ANALYSIS ******************* */
             /* do transform */
 
-            smbFft(gFFTworksp, fftFrameSize, -1);
+            // smbFft(gFFTworksp, fftFrameSize, -1);
+            smbFft(gFFTworksp, fftFrameSize, -1, wr, wi, arg, p1, p2, temp, tr, ti, ur, ui, p1r, p1i, p2r, p2i, i, bitm,
+                   j, le, le2, k)
 
-            // #pragma omp parallel for num_threads(NUM_THREADS)
-            /* this is the analysis step */
-            // #pragma omp parallel for num_threads(NUM_THREADS)
-            for (k = 0; k <= fftFrameSize2; k++) {
+                // #pragma omp parallel for num_threads(NUM_THREADS)
+                /* this is the analysis step */
+                // #pragma omp parallel for num_threads(NUM_THREADS)
+                for (k = 0; k <= fftFrameSize2; k++) {
                 /* de-interlace FFT buffer */
                 real = gFFTworksp[2 * k];
                 imag = gFFTworksp[2 * k + 1];
@@ -340,11 +342,12 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
-            smbFft(gFFTworksp, fftFrameSize, 1);
-
+            // smbFft(gFFTworksp, fftFrameSize, 1);
+            mbFft(gFFTworksp, fftFrameSize, 1, wr, wi, arg, p1, p2, temp, tr, ti, ur, ui, p1r, p1i, p2r, p2i, i, bitm,
+                  j, le, le2, k)
 /* do windowing and add to output accumulator NUM_THREADS*/
 #pragma omp parallel for num_threads(NUM_THREADS)
-            for (k = 0; k < fftFrameSize; k++) {
+                for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
                 gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
             }
