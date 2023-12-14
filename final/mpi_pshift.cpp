@@ -1,6 +1,6 @@
 /**
  * @file mpi_pshift.cpp
- * @author your name (you@domain.com)
+ * @author Keoni Burns
  * @brief
  * @version 0.1
  * @date 2023-12-05
