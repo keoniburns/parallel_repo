@@ -325,21 +325,21 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 gFFTworksp[2 * k + 1] = magn * sin(phase);
             }
 
-/* zero negative frequencies */
-#pragma omp parallel for num_threads(NUM_THREADS) shared(gFFTworksp) private(k)
+            /* zero negative frequencies */
+            // #pragma omp parallel for num_threads(NUM_THREADS) shared(gFFTworksp) private(k)
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
             smbFft(gFFTworksp, fftFrameSize, 1);
 
-            /* do windowing and add to output accumulator NUM_THREADS*/
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+/* do windowing and add to output accumulator NUM_THREADS*/
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
                 gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
             }
 
-#pragma omp parallel for num_threads(NUM_THREADS) private(k) shared(gInFIFO, gOutFIFO)
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k < stepSize; k++) {
                 gOutFIFO[k] = gOutputAccum[k];
             }
@@ -348,7 +348,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
 /* move input FIFO */
-#pragma omp parallel for num_threads(NUM_THREADS) shared(gInFIFO) private(k)
+#pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k < inFifoLatency; k++) {
                 gInFIFO[k] = gInFIFO[k + stepSize];
             }
