@@ -112,8 +112,8 @@ int main(int argc, char *argv[]) {
      * 4096
      * 8192
      */
-    const long fftFrameSize = 1024;  // FFT frame size
-    const long osamp = 32;           // STFT oversampling factor
+    const long fftFrameSize = 64;  // FFT frame size
+    const long osamp = 32;         // STFT oversampling factor
 
     // no idea what the fuck this does
     int bitD = audio.getBitDepth();
