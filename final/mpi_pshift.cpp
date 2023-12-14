@@ -326,8 +326,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             }
 
 /* zero negative frequencies */
-#pragma omp parallel for num_threads(NUM_THREADS) \
-    shared(fftFrameSize, gOutputAccum, gFFTworksp, gOutFIFO) private(k, window)
+#pragma omp parallel for num_threads(NUM_THREADS) shared(gFFTworksp) private(k)
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
@@ -349,7 +348,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
 /* move input FIFO */
-#pragma omp parallel for num_threads(NUM_THREADS) shared(gInFIFO) private(k, stepSize)
+#pragma omp parallel for num_threads(NUM_THREADS) shared(gInFIFO) private(k)
             for (k = 0; k < inFifoLatency; k++) {
                 gInFIFO[k] = gInFIFO[k + stepSize];
             }
