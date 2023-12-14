@@ -296,8 +296,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 
 /* ***************** SYNTHESIS ******************* */
 /* this is the synthesis step */
-#pragma omp parallel for num_threads(NUM_THREADS) \
-    shared(gSynMagn, gSynFreq, freqPerBin, osamp, gFFTworksp, gSumPhase) private(k, tmp, magn, phase)
+#pragma omp parallel for num_threads(NUM_THREADS) shared(gSynMagn, gSynFreq, freqPerBin, osamp, gFFTworksp, gSumPhase, \
+                                                             window, gSumPhase) private(k, tmp, magn, phase, phase)
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* get magnitude and true frequency from synthesis arrays */
                 magn = gSynMagn[k];
@@ -324,8 +324,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 gFFTworksp[2 * k + 1] = magn * sin(phase);
             }
 
-            /* zero negative frequencies */
-            // #pragma omp parallel for num_threads(NUM_THREADS)
+/* zero negative frequencies */
+#pragma omp parallel for num_threads(NUM_THREADS) shared(fftFrameSize, gOutputAccum, gFFTworksp, gOutFIFO) private(k, )
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
@@ -396,9 +396,6 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
             for (i = j; i < 2 * fftFrameSize; i += le) {
                 tr = *p2r * ur - *p2i * ui;
                 ti = *p2r * ui + *p2i * ur;
-                cout << "i : " << i << endl;
-                cout << "   tr : " << tr << endl;
-                cout << "   ti : " << ti << endl;
                 *p2r = *p1r - tr;
                 *p2i = *p1i - ti;
                 *p1r += tr;
