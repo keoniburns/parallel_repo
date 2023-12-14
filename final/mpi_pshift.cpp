@@ -140,13 +140,14 @@ int main(int argc, char *argv[]) {
     MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
-        vector<double> out;
+        vector<double> out(audio.getNumSamplesPerChannel());
+
         long i;
 #pragma omp parallel for num_threads(NUM_THREADS)
         for (i = 0; i < audio.getNumSamplesPerChannel(); i++) {
-// cout << setprecision(15) << global_outdata[i] << endl;
-#pragma omp critical
-            { out.push_back(global_outdata[i]); }
+            // cout << setprecision(15) << global_outdata[i] << endl;
+
+            out[i] = global_outdata[i];
         }
 
         vector<vector<double>> final;
