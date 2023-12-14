@@ -296,8 +296,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 
 /* ***************** SYNTHESIS ******************* */
 /* this is the synthesis step */
-#pragma omp parallel for num_threads(NUM_THREADS) shared(gSynMagn, gSynFreq, freqPerBin, osamp, gFFTworksp, gSumPhase, \
-                                                             window, gSumPhase) private(k, tmp, magn, phase, phase)
+#pragma omp parallel for num_threads(NUM_THREADS) \
+    shared(gSynMagn, gSynFreq, freqPerBin, osamp, gFFTworksp, gSumPhase) private(k, tmp, magn, phase)
             for (k = 0; k <= fftFrameSize2; k++) {
                 /* get magnitude and true frequency from synthesis arrays */
                 magn = gSynMagn[k];
@@ -325,7 +325,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             }
 
 /* zero negative frequencies */
-#pragma omp parallel for num_threads(NUM_THREADS) shared(fftFrameSize, gOutputAccum, gFFTworksp, gOutFIFO) private(k, )
+#pragma omp parallel for num_threads(NUM_THREADS) \
+    shared(fftFrameSize, gOutputAccum, gFFTworksp, gOutFIFO) private(k, window)
             for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
             /* do inverse transform */
@@ -337,15 +338,20 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
                 gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
             }
-            // #pragma omp parallel for num_threads(NUM_THREADS)
-            for (k = 0; k < stepSize; k++) gOutFIFO[k] = gOutputAccum[k];
+
+#pragma omp parallel for num_threads(NUM_THREADS) private(k) shared(gInFIFO, gOutFIFO)
+            for (k = 0; k < stepSize; k++) {
+                gOutFIFO[k] = gOutputAccum[k];
+            }
 
             /* shift accumulator */
             memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
-            /* move input FIFO */
-            // #pragma omp parallel for num_threads(NUM_THREADS)
-            for (k = 0; k < inFifoLatency; k++) gInFIFO[k] = gInFIFO[k + stepSize];
+/* move input FIFO */
+#pragma omp parallel for num_threads(NUM_THREADS) shared(gInFIFO) private(k, stepSize)
+            for (k = 0; k < inFifoLatency; k++) {
+                gInFIFO[k] = gInFIFO[k + stepSize]
+            };
         }
     }
 }
