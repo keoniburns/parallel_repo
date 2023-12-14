@@ -220,133 +220,137 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     /*#pragma omp parallel for num_threads(NUM_THREADS)                                                                \
         shared(gInFIFO, gOutFIFO, gRover, gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq, gSynMagn, gSynFreq, gSumPhase, \
                    gOutputAccum) private(i, k, window, real, imag, magn, phase, tmp, qpd, index) */
-#pragma omp parallel for num_threads(NUM_THREADS)
-    // shared(gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq, gSynMagn, gSynFreq, gSumPhase, gOutputAccum, gInFIFO,Z
-    /* now we have enough data for processing */
-    if (gRover >= fftFrameSize) {
-        gRover = inFifoLatency;
-        // #pragma omp parallel for num_threads(NUM_THREADS) private(k, window) shared(fftFrameSize, gFFTworksp)
-        /* This is where we make our windows so im thinking we can just leave this as is */
-        for (k = 0; k < fftFrameSize; k++) {
-            window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
-            gFFTworksp[2 * k] = gInFIFO[k] * window;
-            gFFTworksp[2 * k + 1] = 0.;
-        }
+    for (i = 0; i < numSampsToProcess; i++) {
+        /* As long as we have not yet collected enough data just read in */
+        gInFIFO[gRover] = indata[i];
+        outdata[i] = gOutFIFO[gRover - inFifoLatency];
+        gRover++;
 
-        /* ***************** ANALYSIS ******************* */
-        /* do transform */
-
-        smbFft(gFFTworksp, fftFrameSize, -1);
-
-        // #pragma omp parallel for num_threads(NUM_THREADS)
-        /* this is the analysis step */
-        // #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k <= fftFrameSize2; k++) {
-            /* de-interlace FFT buffer */
-            real = gFFTworksp[2 * k];
-            imag = gFFTworksp[2 * k + 1];
-
-            /* compute magnitude and phase */
-            magn = 2. * sqrt(real * real + imag * imag);
-            phase = atan2(imag, real);
-
-            /* compute phase difference */
-            tmp = phase - gLastPhase[k];
-            gLastPhase[k] = phase;
-
-            /* subtract expected phase difference */
-            tmp -= (double)k * expct;
-
-            /* map delta phase into +/- Pi interval */
-            qpd = tmp / M_PI;
-            if (qpd >= 0)
-                qpd += qpd & 1;
-            else
-                qpd -= qpd & 1;
-            tmp -= M_PI * (double)qpd;
-
-            /* get deviation from bin frequency from the +/- Pi interval */
-            tmp = osamp * tmp / (2. * M_PI);
-
-            /* compute the k-th partials' true frequency */
-            tmp = (double)k * freqPerBin + tmp * freqPerBin;
-
-            /* store magnitude and true frequency in analysis arrays */
-            gAnaMagn[k] = magn;
-            gAnaFreq[k] = tmp;
-        }
-
-        /* ***************** PROCESSING ******************* */
-        /* this does the actual pitch shifting */
-        memset(gSynMagn, 0, fftFrameSize * sizeof(double));
-        memset(gSynFreq, 0, fftFrameSize * sizeof(double));
-#pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k <= fftFrameSize2; k++) {
-            index = k * pitchShift;
-            if (index <= fftFrameSize2) {
-                gSynMagn[index] += gAnaMagn[k];
-                gSynFreq[index] = gAnaFreq[k] * pitchShift;
+        /* now we have enough data for processing */
+        if (gRover >= fftFrameSize) {
+            gRover = inFifoLatency;
+            // #pragma omp parallel for num_threads(NUM_THREADS) private(k, window) shared(fftFrameSize, gFFTworksp)
+            /* This is where we make our windows so im thinking we can just leave this as is */
+            for (k = 0; k < fftFrameSize; k++) {
+                window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
+                gFFTworksp[2 * k] = gInFIFO[k] * window;
+                gFFTworksp[2 * k + 1] = 0.;
             }
-        }
+
+            /* ***************** ANALYSIS ******************* */
+            /* do transform */
+
+            smbFft(gFFTworksp, fftFrameSize, -1);
+
+            // #pragma omp parallel for num_threads(NUM_THREADS)
+            /* this is the analysis step */
+            // #pragma omp parallel for num_threads(NUM_THREADS)
+            for (k = 0; k <= fftFrameSize2; k++) {
+                /* de-interlace FFT buffer */
+                real = gFFTworksp[2 * k];
+                imag = gFFTworksp[2 * k + 1];
+
+                /* compute magnitude and phase */
+                magn = 2. * sqrt(real * real + imag * imag);
+                phase = atan2(imag, real);
+
+                /* compute phase difference */
+                tmp = phase - gLastPhase[k];
+                gLastPhase[k] = phase;
+
+                /* subtract expected phase difference */
+                tmp -= (double)k * expct;
+
+                /* map delta phase into +/- Pi interval */
+                qpd = tmp / M_PI;
+                if (qpd >= 0)
+                    qpd += qpd & 1;
+                else
+                    qpd -= qpd & 1;
+                tmp -= M_PI * (double)qpd;
+
+                /* get deviation from bin frequency from the +/- Pi interval */
+                tmp = osamp * tmp / (2. * M_PI);
+
+                /* compute the k-th partials' true frequency */
+                tmp = (double)k * freqPerBin + tmp * freqPerBin;
+
+                /* store magnitude and true frequency in analysis arrays */
+                gAnaMagn[k] = magn;
+                gAnaFreq[k] = tmp;
+            }
+
+            /* ***************** PROCESSING ******************* */
+            /* this does the actual pitch shifting */
+            memset(gSynMagn, 0, fftFrameSize * sizeof(double));
+            memset(gSynFreq, 0, fftFrameSize * sizeof(double));
+#pragma omp parallel for num_threads(NUM_THREADS)
+            for (k = 0; k <= fftFrameSize2; k++) {
+                index = k * pitchShift;
+                if (index <= fftFrameSize2) {
+                    gSynMagn[index] += gAnaMagn[k];
+                    gSynFreq[index] = gAnaFreq[k] * pitchShift;
+                }
+            }
 
 /* ***************** SYNTHESIS ******************* */
 /* this is the synthesis step */
 #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k <= fftFrameSize2; k++) {
-            /* get magnitude and true frequency from synthesis arrays */
-            magn = gSynMagn[k];
-            tmp = gSynFreq[k];
+            for (k = 0; k <= fftFrameSize2; k++) {
+                /* get magnitude and true frequency from synthesis arrays */
+                magn = gSynMagn[k];
+                tmp = gSynFreq[k];
 
-            /* subtract bin mid frequency */
-            tmp -= (double)k * freqPerBin;
+                /* subtract bin mid frequency */
+                tmp -= (double)k * freqPerBin;
 
-            /* get bin deviation from freq deviation */
-            tmp /= freqPerBin;
+                /* get bin deviation from freq deviation */
+                tmp /= freqPerBin;
 
-            /* take osamp into account */
-            tmp = 2. * M_PI * tmp / osamp;
+                /* take osamp into account */
+                tmp = 2. * M_PI * tmp / osamp;
 
-            /* add the overlap phase advance back in */
-            tmp += (double)k * expct;
+                /* add the overlap phase advance back in */
+                tmp += (double)k * expct;
 
-            /* accumulate delta phase to get bin phase */
-            gSumPhase[k] += tmp;
-            phase = gSumPhase[k];
+                /* accumulate delta phase to get bin phase */
+                gSumPhase[k] += tmp;
+                phase = gSumPhase[k];
 
-            /* get real and imag part and re-interleave */
-            gFFTworksp[2 * k] = magn * cos(phase);
-            gFFTworksp[2 * k + 1] = magn * sin(phase);
-        }
+                /* get real and imag part and re-interleave */
+                gFFTworksp[2 * k] = magn * cos(phase);
+                gFFTworksp[2 * k + 1] = magn * sin(phase);
+            }
 
 /* zero negative frequencies */
 #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
+            for (k = fftFrameSize + 2; k < 2 * fftFrameSize; k++) gFFTworksp[k] = 0.;
 
-        /* do inverse transform */
-        smbFft(gFFTworksp, fftFrameSize, 1);
+            /* do inverse transform */
+            smbFft(gFFTworksp, fftFrameSize, 1);
 
 /* do windowing and add to output accumulator NUM_THREADS*/
 #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k < fftFrameSize; k++) {
-            window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
-            gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
-        }
+            for (k = 0; k < fftFrameSize; k++) {
+                window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
+                gOutputAccum[k] += 2. * window * gFFTworksp[2 * k] / (fftFrameSize2 * osamp);
+            }
 
 #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k < stepSize; k++) {
-            gOutFIFO[k] = gOutputAccum[k];
-        }
+            for (k = 0; k < stepSize; k++) {
+                gOutFIFO[k] = gOutputAccum[k];
+            }
 
-        /* shift accumulator */
-        memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
+            /* shift accumulator */
+            memmove(gOutputAccum, gOutputAccum + stepSize, fftFrameSize * sizeof(double));
 
-        /* move input FIFO */
-        // #pragma omp parallel for num_threads(NUM_THREADS)
-        for (k = 0; k < inFifoLatency; k++) {
-            gInFIFO[k] = gInFIFO[k + stepSize];
+            /* move input FIFO */
+            // #pragma omp parallel for num_threads(NUM_THREADS)
+            for (k = 0; k < inFifoLatency; k++) {
+                gInFIFO[k] = gInFIFO[k + stepSize];
+            }
         }
     }
-}
 }
 
 /**
