@@ -343,8 +343,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 
             /* do inverse transform */
             // smbFft(gFFTworksp, fftFrameSize, 1);
-            mbFft(gFFTworksp, fftFrameSize, 1, wr, wi, arg, p1, p2, temp, tr, ti, ur, ui, p1r, p1i, p2r, p2i, i, bitm,
-                  j, le, le2, k)
+            smbFft(gFFTworksp, fftFrameSize, 1, wr, wi, arg, p1, p2, temp, tr, ti, ur, ui, p1r, p1i, p2r, p2i, i, bitm,
+                   j, le, le2, k)
 /* do windowing and add to output accumulator NUM_THREADS*/
 #pragma omp parallel for num_threads(NUM_THREADS)
                 for (k = 0; k < fftFrameSize; k++) {
