@@ -220,10 +220,6 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     /*#pragma omp parallel for num_threads(NUM_THREADS)                                                                \
         shared(gInFIFO, gOutFIFO, gRover, gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq, gSynMagn, gSynFreq, gSumPhase, \
                    gOutputAccum) private(i, k, window, real, imag, magn, phase, tmp, qpd, index) */
-#pragma omp parallel for num_threads(NUM_THREADS)                                                                    \
-    shared(gFFTworksp, gLastPhase, gAnaMagn, gAnaFreq, gSynMagn, gSynFreq, gSumPhase, gOutputAccum, gInFIFO,         \
-               gOutFIFO) private(k, real, imag, magn, phase, tmp, qpd, index, wr, wi, arg, p1, p2, temp, tr, ti, ur, \
-                                     ui, p1r, p1i, p2r, p2i, i, bitm, j, le, le2)
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
