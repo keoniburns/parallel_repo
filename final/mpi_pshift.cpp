@@ -350,8 +350,8 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 /* move input FIFO */
 #pragma omp parallel for num_threads(NUM_THREADS) shared(gInFIFO) private(k, stepSize)
             for (k = 0; k < inFifoLatency; k++) {
-                gInFIFO[k] = gInFIFO[k + stepSize]
-            };
+                gInFIFO[k] = gInFIFO[k + stepSize];
+            }
         }
     }
 }
