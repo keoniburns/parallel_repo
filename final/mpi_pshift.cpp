@@ -41,13 +41,6 @@ int main(int argc, char *argv[]) {
     long local_n, n;
     double a, b, step_size, loc_a, loc_b;
 
-    MPI_Init(NULL, NULL);
-
-    /* Get my process rank */
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-
-    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
-
     // command line args else is for quick testing
     string infile, outfile;
     if (argc > 1) {
@@ -57,11 +50,17 @@ int main(int argc, char *argv[]) {
         infile = "./sounds/5min.wav";
         outfile = "./sounds/5minMPI.wav";
     }
+    AudioFile<double> audio;
+    audio.load(infile);
+    MPI_Init(NULL, NULL);
+
+    /* Get my process rank */
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+    MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
     cout << "rank " << my_rank << " starting up" << endl;
     // audio I/O library functions
-    AudioFile<double> audio;
-    audio.load(infile);
 
     // if (my_rank == 0) {
     //     audio.printSummary();
@@ -92,7 +91,7 @@ int main(int argc, char *argv[]) {
     loc_a = my_rank * local_n;
     loc_b = loc_a + local_n;
 
-    printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
+    // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
 
     // Create local input
     double loc_indata[local_n];
@@ -195,6 +194,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     /* set up some handy variables */
     fftFrameSize2 = fftFrameSize / 2;
     stepSize = fftFrameSize / osamp;
+    cout << "stepSize between each quadrant: " << stepSize << endl;
     freqPerBin = sampleRate / (double)fftFrameSize;
     expct = 2. * M_PI * (double)stepSize / (double)fftFrameSize;
     inFifoLatency = fftFrameSize - stepSize;
@@ -363,6 +363,7 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
     double tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
     long i, bitm, j, le, le2, k;
 
+#pragma omp parallel for num_threads(NUM_THREADS) shared(fftBuffer) private(i, bitm, j, p1, p2, temp)
     for (i = 2; i < 2 * fftFrameSize - 2; i += 2) {
         for (bitm = 2, j = 0; bitm < 2 * fftFrameSize; bitm <<= 1) {
             if (i & bitm) j++;
