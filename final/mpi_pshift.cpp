@@ -58,6 +58,7 @@ int main(int argc, char *argv[]) {
         outfile = "./sounds/5minMPI.wav";
     }
 
+    cout << "rank " << my_rank << " starting up" << endl;
     // audio I/O library functions
     AudioFile<double> audio;
     audio.load(infile);
