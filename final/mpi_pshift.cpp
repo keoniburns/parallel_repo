@@ -23,7 +23,7 @@
 
 #define M_PI 3.14159265358979323846
 #define MAX_FRAME_LENGTH 8192
-#define NUM_THREADS 8
+#define NUM_THREADS (8)
 
 using std::cout;
 using std::endl;
