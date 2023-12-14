@@ -77,9 +77,9 @@ int main(int argc, char *argv[]) {
     n = audio.getNumSamplesPerChannel();
     local_n = (n / comm_sz);  // tot_samples/tot_workers = num samples per worker
 
-    cout << "size of n" << endl;
-    cout << "n/comm_sz = " << local_n;
-    cout << "n mod comm_sz: " << (n % comm_sz) << endl;
+    // cout << "size of n" << endl;
+    // cout << "n/comm_sz = " << local_n;
+    // cout << "n mod comm_sz: " << (n % comm_sz) << endl;
 
     /* why the fuck am i getting residuals */
     if ((n % comm_sz) != 0) {  // i think this will add residuals to the last worker
@@ -130,14 +130,13 @@ int main(int argc, char *argv[]) {
     // #pragma omp parallel num_threads(NUM_THREADS)s
     smbPitchShift(pitchShift, outSize, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
 
-    cout << "rank " << my_rank << " has finished the doings" << endl;
-
     // if (my_rank == 0) {
     //     global_outdata.resize(comm_sz * local_outdata)
     // }
 
     // this should aggregate all the arrays from every worker
     MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    cout << "rank " << my_rank << " has finished the doings" << endl;
 
     if (my_rank == 0) {
         vector<vector<double>> out(1, vector<double>(audio.getNumSamplesPerChannel(), 0));
