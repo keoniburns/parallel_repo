@@ -16,10 +16,21 @@ num_iterations = 5  # You can adjust this as needed
 for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
     # Build the command lines with different input and output files
     for j in range(2, 4, 1):
+        # command1 = [
+        #     "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
+        #     "sounds/" + infile,
+        #     "sounds/" + str(i) + str(j) + outfile1,
+        #     str(i),
+        # ]
         command1 = [
-            "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
-            "sounds/" + infile,
-            "sounds/" + str(i) + str(j) + outfile1,
+            "mpirun",
+            "-n",
+            "3",
+            "-ppn",
+            "8",
+            "./" + program1,
+            "sounds/" + infile1,
+            str(i) + str(j) + "sounds" + outfile1,
             str(i),
         ]
 
