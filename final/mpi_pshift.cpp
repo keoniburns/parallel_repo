@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
-    cout << "rank " << my_rank << " starting up" << endl;
+    // cout << "rank " << my_rank << " starting up" << endl;
     // audio I/O library functions
 
     // if (my_rank == 0) {
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     /* why the fuck am i getting residuals */
     if ((n % comm_sz) != 0) {  // i think this will add residuals to the last worker
         if (my_rank == comm_sz - 1) {
-            cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
+            // cout << (local_n % comm_sz) << " residuals added to worker " << my_rank << endl;
             local_n += (local_n % comm_sz);
         }
     }
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
 
     // this should aggregate all the arrays from every worker
     MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    cout << "rank " << my_rank << " has finished the doings" << endl;
+    // cout << "rank " << my_rank << " has finished the doings" << endl;
 
     if (my_rank == 0) {
         vector<vector<double>> out(1, vector<double>(audio.getNumSamplesPerChannel(), 0));
@@ -207,7 +207,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     /* set up some handy variables */
     fftFrameSize2 = fftFrameSize / 2;
     stepSize = fftFrameSize / osamp;
-    cout << "stepSize between each quadrant: " << stepSize << endl;
+    // cout << "stepSize between each quadrant: " << stepSize << endl;
     freqPerBin = sampleRate / (double)fftFrameSize;
     expct = 2. * M_PI * (double)stepSize / (double)fftFrameSize;
     inFifoLatency = fftFrameSize - stepSize;
