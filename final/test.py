@@ -16,15 +16,15 @@ program1_outputs = []
 command2 = ["./smb", "sounds/" + infile, "autest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 res2 = float(result2.stdout)
-print("workers,threads,mpitime,seqtime,speedup")
-for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
-    for j in range(2, 5, 1):  # workers
+print("workers,procs,mpitime,seqtime,speedup")
+for i in range(2, 7, 2):  # Incrementing by 2 from 2 to 8
+    for j in range(2, 9, 1):  # workers
         command1 = [
             "mpirun",
             "-n",
             str(j),
             "-ppn",
-            "8",
+            str(i),
             "./mpishift",
             "sounds/" + infile,
             "auot/" + str(i) + str(j) + outfile1,
