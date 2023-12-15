@@ -45,7 +45,7 @@ result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
-for i, output in enumerate(program1_outputs, start=2):
-    print(f"speed up for iteration {i}")
-    print(output)
-    # print(output)
+# for i, output in enumerate(program1_outputs, start=2):
+#     print(f"speed up for iteration {i}")
+#     print(output)
+#     # print(output)
