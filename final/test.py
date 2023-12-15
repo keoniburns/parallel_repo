@@ -29,7 +29,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
             "-ppn",
             "8",
             "./mpishift",
-            "sounds/" + infile1,
+            "sounds/" + infile,
             str(i) + str(j) + "sounds" + outfile1,
             str(i),
         ]
