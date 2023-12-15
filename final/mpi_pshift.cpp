@@ -65,20 +65,8 @@ int main(int argc, char *argv[]) {
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
-    // cout << "rank " << my_rank << " starting up" << endl;
-    // audio I/O library functions
-
-    // if (my_rank == 0) {
-    //     audio.printSummary();
-    //     cout << "total number of workers is " << comm_sz << endl;
-    // }
-    // const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
-
-    /* MPI vars */
-
     /* Let the system do what it needs to start up MPI */
 
-    /* need to figure out what to do about residuals */
     n = audio.getNumSamplesPerChannel();
     local_n = (n / comm_sz);  // tot_samples/tot_workers = num samples per worker
 
@@ -100,8 +88,6 @@ int main(int argc, char *argv[]) {
     start = MPI_Wtime();
 
     // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
-    // clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-    // Create local input
     double loc_indata[local_n];
 #pragma omp parallel for num_threads(threads)
     for (long i = 0; i < local_n; i++) {
@@ -135,13 +121,7 @@ int main(int argc, char *argv[]) {
     double global_outdata[comm_sz * local_n];
 
     // Call the pitch shifting function
-    // #pragma omp parallel num_threads(NUM_THREADS)s
-
     smbPitchShift(pitchShift, outSize, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
-
-    // if (my_rank == 0) {
-    //     global_outdata.resize(comm_sz * local_outdata)
-    // }
 
     // this should aggregate all the arrays from every worker
     MPI_Gather(local_outdata, local_n, MPI_DOUBLE, global_outdata, local_n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -157,9 +137,6 @@ int main(int argc, char *argv[]) {
 
             out[0][i] = global_outdata[i];
         }
-
-        // vector<vector<double>> final;
-        // final.push_back(out);
         audio.setAudioBufferSize(audio.getNumChannels(), audio.getNumSamplesPerChannel());
         audio.setAudioBuffer(out);
         audio.setSampleRate(sampleRate);
@@ -210,7 +187,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     /* set up some handy variables */
     fftFrameSize2 = fftFrameSize / 2;
     stepSize = fftFrameSize / osamp;
-    // cout << "stepSize between each quadrant: " << stepSize << endl;
+
     freqPerBin = sampleRate / (double)fftFrameSize;
     expct = 2. * M_PI * (double)stepSize / (double)fftFrameSize;
     inFifoLatency = fftFrameSize - stepSize;
@@ -230,10 +207,6 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
     }
 
     /* main processing loop */
-    /**
-     * @brief i believe this is the main split for mpi where we will take the total number of samples
-     * and divide it up by n workers and i think it'll work
-     */
     for (i = 0; i < numSampsToProcess; i++) {
         /* As long as we have not yet collected enough data just read in */
         gInFIFO[gRover] = indata[i];
@@ -243,8 +216,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
         /* now we have enough data for processing */
         if (gRover >= fftFrameSize) {
             gRover = inFifoLatency;
-            // #pragma omp parallel for num_threads(NUM_THREADS) private(k, window) shared(fftFrameSize, gFFTworksp)
-            /* This is where we make our windows so im thinking we can just leave this as is */
+
             for (k = 0; k < fftFrameSize; k++) {
                 window = -.5 * cos(2. * M_PI * (double)k / (double)fftFrameSize) + .5;
                 gFFTworksp[2 * k] = gInFIFO[k] * window;
@@ -404,13 +376,11 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
         arg = M_PI / (le2 >> 1);
         wr = cos(arg);
         wi = sign * sin(arg);
-        // #pragma omp parallel for num_threads(NUM_THREADS) shared(fftBuffer)
         for (j = 0; j < le2; j += 2) {
             p1r = fftBuffer + j;
             p1i = p1r + 1;
             p2r = p1r + le2;
             p2i = p2r + 1;
-            // #pragma omp parallel for num_threads()
             for (i = j; i < 2 * fftFrameSize; i += le) {
                 tr = *p2r * ur - *p2i * ui;
                 ti = *p2r * ui + *p2i * ur;

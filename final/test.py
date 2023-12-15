@@ -16,16 +16,9 @@ program1_outputs = []
 command2 = ["./smb", "sounds/" + infile, "autest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 res2 = float(result2.stdout)
-
+print("workers,threads,mpitime,seqtime,speedup")
 for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
     for j in range(2, 5, 1):  # workers
-        # Build the command lines with different input and output files
-        # command1 = [
-        #     "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
-        #     "sounds/" + infile,
-        #     "sounds/" + str(i) + str(j) + outfile1,
-        #     str(i),
-        # ]
         command1 = [
             "mpirun",
             "-n",
@@ -45,10 +38,4 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         # program1_outputs.append(result1.stdout)
         speedup = res2 / res1
         # Print CSV line
-        print("workers,threads,mpitime,seqtime,speedup")
         print(f"{j},{i},{res1},{res2},{speedup}")
-
-    # for i, output in enumerate(program1_outputs):
-
-    # Reset the program1_outputs list for the next iteration of j
-    # program1_outputs = []

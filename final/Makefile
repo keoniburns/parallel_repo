@@ -8,9 +8,9 @@ MPIFLAGS= -g -Wall -O0 $(INCLUDE_DIRS)
 CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 OMPFLAGS = -g -Wall 
 
-PRODUCT= smb mpishift mpishift2
+PRODUCT= smb mpishift 
 # MPIFILES= ex2.c
-CPPFILES= smb_starter.cpp mpi_pshift.cpp mpi_pshift2.cpp
+CPPFILES= smb_starter.cpp mpi_pshift.cpp
 CFILES=
 SRCS= ${HFILES} ${CFILES}
 OBJS= ${CFILES:.c=.o}
@@ -27,6 +27,4 @@ smb: smb_starter.cpp
 mpishift: mpi_pshift.cpp
 	$(MPICC) $(MPIFLAGS) -o $@ mpi_pshift.cpp -fopenmp
 
-mpishift2: mpi_pshift2.cpp
-	$(MPICC) $(MPIFLAGS) -o $@ mpi_pshift2.cpp -fopenmp
 
