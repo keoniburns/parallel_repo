@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
         vector<vector<double>> out(1, vector<double>(audio.getNumSamplesPerChannel(), 0));
 
         long i;
-#pragma omp parallel for num_threads(NUM_THREADS)
+#pragma omp parallel for
         for (i = 0; i < audio.getNumSamplesPerChannel(); i++) {
             // cout << setprecision(15) << global_outdata[i] << endl;
 
