@@ -65,8 +65,6 @@ int main(int argc, char *argv[]) {
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
-    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes start timing at the same moment
-    start = MPI_Wtime();
     // cout << "rank " << my_rank << " starting up" << endl;
     // audio I/O library functions
 
@@ -98,9 +96,11 @@ int main(int argc, char *argv[]) {
 
     loc_a = my_rank * local_n;
     loc_b = loc_a + local_n;
+    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes start timing at the same moment
+    start = MPI_Wtime();
 
     // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
-    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+    // clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     // Create local input
     double loc_indata[local_n];
 #pragma omp parallel for num_threads(threads)
