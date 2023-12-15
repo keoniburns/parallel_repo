@@ -19,7 +19,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         command1 = [
             "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
             "sounds/" + infile,
-            "sounds/" + outfile1 + str(i) + str(j),
+            "sounds/" + str(i) + str(j) + outfile1,
             str(i),
         ]
 
