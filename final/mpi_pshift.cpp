@@ -111,8 +111,8 @@ int main(int argc, char *argv[]) {
      * 4096
      * 8192
      */
-    const long fftFrameSize = 64;  // FFT frame size
-    const long osamp = 32;         // STFT oversampling factor
+    const long fftFrameSize = 2048;  // FFT frame size
+    const long osamp = 32;           // STFT oversampling factor
 
     // no idea what the fuck this does
     int bitD = audio.getBitDepth();
@@ -282,7 +282,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
             /* this does the actual pitch shifting */
             memset(gSynMagn, 0, fftFrameSize * sizeof(double));
             memset(gSynFreq, 0, fftFrameSize * sizeof(double));
-#pragma omp parallel for num_threads(NUM_THREADS)
+            // #pragma omp parallel for num_threads(NUM_THREADS)
             for (k = 0; k <= fftFrameSize2; k++) {
                 index = k * pitchShift;
                 if (index <= fftFrameSize2) {

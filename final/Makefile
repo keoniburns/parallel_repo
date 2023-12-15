@@ -4,8 +4,8 @@ MPICC = mpicxx
 CPP = g++ -std=c++20
 CC = gcc
 CFLAGS= -g -Wall $(INCLUDE_DIRS) $(CDEFS)
-MPIFLAGS= -g -Wall -O3 $(INCLUDE_DIRS) 
-CFLAGS2= -O3 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
+MPIFLAGS= -g -Wall -O0 $(INCLUDE_DIRS) 
+CFLAGS2= -O0 -g -Wall $(INCLUDE_DIRS) $(CDEFS)
 OMPFLAGS = -g -Wall 
 
 PRODUCT= smb mpishift mpishift2
