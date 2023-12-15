@@ -34,7 +34,7 @@ for j in range(2, 5, 1):
             str(i),
         ]
         result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
-        print("threads: " + str(i), "workers: " + str(j), result1)
+        print("threads: " + str(i), "workers: " + str(j), result1.stdout)
 
         # Run the programs using subprocess
 

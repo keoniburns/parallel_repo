@@ -37,10 +37,10 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
-    struct timespec start, end;
     int my_rank, comm_sz;
     long local_n, n;
     double a, b, step_size, loc_a, loc_b;
+    double start, end;
     int threads = NUM_THREADS;
 
     // command line args else is for quick testing
@@ -65,6 +65,8 @@ int main(int argc, char *argv[]) {
 
     MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 
+    MPI_Barrier(MPI_COMM_WORLD);  // Ensure all processes start timing at the same moment
+    start = MPI_Wtime();
     // cout << "rank " << my_rank << " starting up" << endl;
     // audio I/O library functions
 
@@ -163,14 +165,14 @@ int main(int argc, char *argv[]) {
         audio.setSampleRate(sampleRate);
         audio.save(outfile);
     }
+    end = MPI_Wtime();
+    MPI_Barrier(MPI_COMM_WORLD);
 
+    if (rank == 0) {
+        printf("%f", end_time - start_time);
+    }
     MPI_Finalize();
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
-    double time_taken;
-    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
-    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-    printf("%f\n", time_taken);
     return 0;
 }
 
