@@ -49,10 +49,9 @@ print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
 for i, output in enumerate(newouts, start=2):
     print(f"speed up for iteration {i}")
-    res1 = float(output.strip())
-    print(res1)
+    print(output)
     # res1 = float(values_str)
     # res1 = [float(value) for value in values_str]
-    speed = res2 / res1
+    speed = res2 / output
     # print(output)
     print(speed)
