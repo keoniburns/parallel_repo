@@ -1,0 +1,62 @@
+sequential output 33.823351
+
+speed up for iteration 2
+18.863143
+18.863541
+
+speed up for iteration 3
+19.773562
+19.770490
+19.770662
+
+speed up for iteration 4
+15.138701
+15.138623
+15.138771
+15.139053
+
+speed up for iteration 5
+18.979700
+18.979022
+
+speed up for iteration 6
+19.590178
+19.587101
+19.587503
+
+speed up for iteration 7
+14.980044
+14.979400
+14.979733
+14.979746
+
+speed up for iteration 8
+18.903805
+18.904201
+
+speed up for iteration 9
+19.682135
+19.678990
+19.679500
+
+speed up for iteration 10
+15.004267
+15.003892
+15.004757
+15.004745
+
+speed up for iteration 11
+18.991271
+18.991772
+
+speed up for iteration 12
+19.492719
+19.493096
+19.496064
+
+speed up for iteration 13
+14.994616
+14.995390
+14.995392
+14.995433
+
