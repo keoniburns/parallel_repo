@@ -44,7 +44,8 @@ print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
 for i, output in enumerate(program1_outputs, start=2):
     print(f"speed up for {i%2} and {i} workers:")
-    res1 = float(output)
+    values_str = output.strip().split("\n")
+    res1 = float(values_str)
     speed = res2 / output
     # print(output)
     print(speed)
