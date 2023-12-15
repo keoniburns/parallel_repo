@@ -39,7 +39,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 int main(int argc, char *argv[]) {
     int my_rank, comm_sz;
     long local_n, n;
-    double a, b, step_size, loc_a, loc_b;
+    double loc_a;
     double start, end;
     int threads = NUM_THREADS;
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
     double loc_indata[local_n];
-#pragma omp parallel for num_threads(threads)
+    // #pragma omp parallel for num_threads(threads)
     for (long i = 0; i < local_n; i++) {
         loc_indata[i] = audio.samples[0][i + loc_a];
     }
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
         vector<vector<double>> out(1, vector<double>(audio.getNumSamplesPerChannel(), 0));
 
         long i;
-#pragma omp parallel for num_threads(NUM_THREADS)
+        // #pragma omp parallel for num_threads(NUM_THREADS)
         for (i = 0; i < audio.getNumSamplesPerChannel(); i++) {
             // cout << setprecision(15) << global_outdata[i] << endl;
 
@@ -351,7 +351,7 @@ void smbFft(double *fftBuffer, long fftFrameSize, long sign) {
     double tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
     long i, bitm, j, le, le2, k;
 
-#pragma omp parallel for num_threads(NUM_THREADS) shared(fftBuffer) private(i, bitm, j, p1, p2, temp)
+    // #pragma omp parallel for num_threads(NUM_THREADS) shared(fftBuffer) private(i, bitm, j, p1, p2, temp)
     for (i = 2; i < 2 * fftFrameSize - 2; i += 2) {
         for (bitm = 2, j = 0; bitm < 2 * fftFrameSize; bitm <<= 1) {
             if (i & bitm) j++;

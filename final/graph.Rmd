@@ -1,0 +1,46 @@
+---
+title: "Untitled"
+author: "Keoni Burns"
+date: "2023-12-15"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+
+# Replace "path/to/your/data.csv" with the actual path to your CSV file
+
+
+# Read the CSV data from the file
+data <- read.csv("1min.csv")
+print(data)
+
+# Create a line plot with individual lines for each worker
+plot <- ggplot(data, aes(x = threads, y = speedup, group = workers, color = as.factor(workers))) +
+  geom_line() +
+  labs(title = "Speedup vs. Number of Threads", x = "Number of Threads", y = "Speedup", color = "Workers") +
+  scale_color_discrete(name = "Workers") +
+  theme_minimal()
+
+# Show the plot
+print(plot)
+
+```
+
+```{r}
+data <- read.csv("5min.csv")
+# Define the desired y-axis range and precision
+y_axis_range <- c(1.5, 3)  # Set the desired range
+y_precision <- 1  # Set the desired precision
+
+# Create a line plot with individual lines for each worker
+plot <- ggplot(data, aes(x = threads, y = speedup, group = workers, color = as.factor(workers))) +
+  geom_line() +
+  labs(title = "Speedup vs. Number of Threads", x = "Number of Threads", y = "Speedup", color = "Workers") +
+  scale_color_discrete(name = "Workers") +
+  scale_y_continuous(limits = y_axis_range, labels = scales::number_format(scale = y_precision)) +  # Set precision
+  theme_minimal()
+
+# Show the plot
+print(plot)
+```
