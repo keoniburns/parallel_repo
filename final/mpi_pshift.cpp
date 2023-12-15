@@ -165,6 +165,7 @@ int main(int argc, char *argv[]) {
     }
 
     MPI_Finalize();
+
     clock_gettime(CLOCK_MONOTONIC_RAW, &end);
     double time_taken;
     time_taken = (end.tv_sec - start.tv_sec) * 1e9;
