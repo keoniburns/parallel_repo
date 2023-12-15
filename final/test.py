@@ -37,12 +37,17 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
         program1_outputs.append(result1.stdout)
 
+newouts = []
+for s in program1_outputs:
+    newlist = s.strip().split("\n")
+    newouts.append(float(value) for value in newlist)
+
 command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
-for i, output in enumerate(program1_outputs, start=2):
+for i, output in enumerate(newouts, start=2):
     print(f"speed up for iteration {i}")
     res1 = float(output.strip())
     print(res1)
