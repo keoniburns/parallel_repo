@@ -17,8 +17,8 @@ command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 res2 = float(result2.stdout)
 
-for j in range(2, 5, 1):
-    for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
+for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
+    for j in range(2, 5, 1):  # workers
         # Build the command lines with different input and output files
         # command1 = [
         #     "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
