@@ -13,7 +13,7 @@ program1_outputs = []
 
 # Loop to run the programs with different input and output files
 
-command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
+command2 = ["./smb", "sounds/" + infile, "autest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 res2 = float(result2.stdout)
 
@@ -34,7 +34,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
             "8",
             "./mpishift",
             "sounds/" + infile,
-            "auotest/" + str(i) + str(j) + outfile1,
+            "auot/" + str(i) + str(j) + outfile1,
             str(i),
         ]
 
