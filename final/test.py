@@ -30,7 +30,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
             "8",
             "./mpishift",
             "sounds/" + infile,
-            "sounds/" + str(i) + str(j) + outfile1,
+            "autest/" + str(i) + str(j) + outfile1,
             str(i),
         ]
 
@@ -38,7 +38,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
         program1_outputs.append(result1.stdout)
 
-command2 = ["./smb", "sounds/" + infile, "sounds/" + outfile1]
+command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 print("sequential output", result2.stdout)
