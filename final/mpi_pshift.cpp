@@ -99,9 +99,9 @@ int main(int argc, char *argv[]) {
 
     // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-// Create local input
-#pragma omp parallel for num_threads(threads)
+    // Create local input
     double loc_indata[local_n];
+#pragma omp parallel for num_threads(threads)
     for (long i = 0; i < local_n; i++) {
         loc_indata[i] = audio.samples[0][i + loc_a];
     }
