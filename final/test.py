@@ -43,8 +43,10 @@ result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
 for i, output in enumerate(program1_outputs, start=2):
-    print(f"speed up for iteration {i}")
-    print(output)
     res1 = float(output)
-    print("speed up is: ", (res2 / res1))
-    # print(output)
+    speedup = res2 / res1
+    # Print CSV line
+    print(f"{i},{res1},{res2},{speedup}")
+
+    # Reset the program1_outputs list for the next iteration of j
+    program1_outputs = []
