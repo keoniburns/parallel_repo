@@ -168,8 +168,8 @@ int main(int argc, char *argv[]) {
     end = MPI_Wtime();
     MPI_Barrier(MPI_COMM_WORLD);
 
-    if (rank == 0) {
-        printf("%f", end_time - start_time);
+    if (my_rank == 0) {
+        printf("%f", end - start);
     }
     MPI_Finalize();
 
