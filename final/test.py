@@ -25,7 +25,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         command1 = [
             "mpirun",
             "-n",
-            "3",
+            str(j),
             "-ppn",
             "8",
             "./mpishift",
@@ -41,7 +41,8 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
 command2 = ["./smb", "sounds/" + infile, "sounds/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
+print("sequential output", result2.stdout)
 for i, output in enumerate(program1_outputs):
-    print(result2.stdout)
+    print(f"Output of program1 for iteration {i}:")
     print(output)
     # print(double(result2.stdout) / double(output))
