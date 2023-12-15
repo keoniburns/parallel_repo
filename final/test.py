@@ -8,7 +8,7 @@ import os
 infile = sys.argv[1]
 outfile1 = sys.argv[2]
 outfile2 = sys.argv[3]
-
+program1_outputs[]
 # Number of iterations
 num_iterations = 5  # You can adjust this as needed
 
