@@ -45,7 +45,8 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         # program1_outputs.append(result1.stdout)
         speedup = res2 / res1
         # Print CSV line
-        print(f"{i},{j},{res1},{res2},{speedup}")
+        print("workers,threads,mpitime,seqtime,speedup")
+        print(f"{j},{i},{res1},{res2},{speedup}")
 
     # for i, output in enumerate(program1_outputs):
 
