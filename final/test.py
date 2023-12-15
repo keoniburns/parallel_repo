@@ -3,19 +3,11 @@ import sys
 import os
 
 # Check if the script is called with the correct number of arguments
-if len(sys.argv) != 6:
-    print(
-        "Usage: python script.py <program1> <infile1> <outfile1> <program2> <infile2> <outfile2>"
-    )
-    sys.exit(1)
 
 
-infile1 = sys.argv[1]
+infile = sys.argv[1]
 outfile1 = sys.argv[2]
-
-
-infile2 = sys.argv[3]
-outfile2 = sys.argv[4]
+outfile2 = sys.argv[3]
 
 # Number of iterations
 num_iterations = 5  # You can adjust this as needed
@@ -26,7 +18,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
     for j in range(2, 4, 1):
         command1 = [
             "mpirun -n " + str(j) + " -ppn 8 ./mpishift",
-            "sounds/" + infile1,
+            "sounds/" + infile,
             "sounds/" + outfile1 + str(i) + str(j),
             str(i),
         ]
@@ -35,7 +27,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
     result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
     program1_outputs.append(result1.stdout)
 
-command2 = ["./smb", "sounds/" + infile1, "sounds/" + outfile1]
+command2 = ["./smb", "sounds/" + infile, "sounds/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 for i, output in enumerate(program1_outputs, start=2):
