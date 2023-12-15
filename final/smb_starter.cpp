@@ -71,9 +71,6 @@ int main(int argc, char *argv[]) {
         infile = "sounds/5min.wav";
         outfile = "./5minSeq.wav";
     }
-    if (argc > 1) {
-        threads = atoi(argv[1]);
-    }
 
     AudioFile<double> audio;
     audio.load(infile);
