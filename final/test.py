@@ -43,8 +43,9 @@ result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
 for i, output in enumerate(program1_outputs, start=2):
-    print(f"speed up for {i%2} and {i} workers:")
+    print(f"speed up for iteration {i}")
     res1 = float(output[0].strip())
+    print(res1)
     # res1 = float(values_str)
     # res1 = [float(value) for value in values_str]
     speed = res2 / res1
