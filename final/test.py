@@ -12,6 +12,11 @@ program1_outputs = []
 
 
 # Loop to run the programs with different input and output files
+
+command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
+result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
+res2 = float(result2.stdout)
+
 for j in range(2, 5, 1):
     for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
         # Build the command lines with different input and output files
@@ -37,16 +42,11 @@ for j in range(2, 5, 1):
         result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
         program1_outputs.append(result1.stdout)
 
-command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
-result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
-
-print("sequential output", result2.stdout)
-res2 = float(result2.stdout)
-for i, output in enumerate(program1_outputs, start=2):
-    res1 = float(output)
-    speedup = res2 / res1
-    # Print CSV line
-    print(f"{i},{res1},{res2},{speedup}")
+    for i, output in enumerate(program1_outputs, start=2):
+        res1 = float(output)
+        speedup = res2 / res1
+        # Print CSV line
+        print(f"{i},{j},{res1},{res2},{speedup}")
 
     # Reset the program1_outputs list for the next iteration of j
     program1_outputs = []
