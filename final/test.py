@@ -45,8 +45,8 @@ res2 = float(result2.stdout)
 for i, output in enumerate(program1_outputs, start=2):
     print(f"speed up for {i%2} and {i} workers:")
     values_str = output.strip().split("\n")
-    # res1 = float(values_str)
-    res1 = [float(value) for value in values_str]
-    speed = res2 / output
+    res1 = float(values_str)
+    # res1 = [float(value) for value in values_str]
+    speed = res2 / res1
     # print(output)
     print(speed)
