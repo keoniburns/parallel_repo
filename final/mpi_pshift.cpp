@@ -70,10 +70,6 @@ int main(int argc, char *argv[]) {
     n = audio.getNumSamplesPerChannel();
     local_n = (n / comm_sz);  // tot_samples/tot_workers = num samples per worker
 
-    // cout << "size of n" << endl;
-    // cout << "n/comm_sz = " << local_n;
-    // cout << "n mod comm_sz: " << (n % comm_sz) << endl;
-
     /* why the fuck am i getting residuals */
     if ((n % comm_sz) != 0) {  // i think this will add residuals to the last worker
         if (my_rank == comm_sz - 1) {
@@ -93,7 +89,6 @@ int main(int argc, char *argv[]) {
     for (long i = 0; i < local_n; i++) {
         loc_indata[i] = audio.samples[0][i + loc_a];
     }
-
     // step size is defined below as frame/osamp
     /* this needs to fit regardless of our number of workers */
     /** must be a multiple of 2
@@ -108,9 +103,6 @@ int main(int argc, char *argv[]) {
      */
     const long fftFrameSize = 2048;  // FFT frame size
     const long osamp = 32;           // STFT oversampling factor
-
-    // no idea what the fuck this does
-    int bitD = audio.getBitDepth();
 
     // we need these to determine the frequency i believe
     const double sampleRate = audio.getSampleRate();  // Sample rate in Hz
