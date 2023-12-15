@@ -9,8 +9,7 @@ infile = sys.argv[1]
 outfile1 = sys.argv[2]
 outfile2 = sys.argv[3]
 program1_outputs = []
-# Number of iterations
-num_iterations = 5  # You can adjust this as needed
+
 
 # Loop to run the programs with different input and output files
 for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
@@ -30,7 +29,7 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
             "8",
             "./mpishift",
             "sounds/" + infile,
-            "autest/" + str(i) + str(j) + outfile1,
+            "auotest/" + str(i) + str(j) + outfile1,
             str(i),
         ]
 
@@ -42,7 +41,8 @@ command2 = ["./smb", "sounds/" + infile, "autotest/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 print("sequential output", result2.stdout)
-for i, output in enumerate(program1_outputs):
-    print(f"Output of program1 for iteration {i}:")
-    print(output)
+for i, output in enumerate(program1_outputs, start=2):
+    print(f"speed up for iteration {i}:")
+    # print(output)
+
     # print(double(result2.stdout) / double(output))
