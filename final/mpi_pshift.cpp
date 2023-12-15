@@ -39,7 +39,7 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 int main(int argc, char *argv[]) {
     int my_rank, comm_sz;
     long local_n, n;
-    double loc_a;
+    double loc_a, loc_b;
     double start, end;
     int threads = NUM_THREADS;
 
