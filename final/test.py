@@ -40,10 +40,9 @@ for i in range(2, 9, 2):  # Incrementing by 2 from 2 to 8
 
         # Run the programs using subprocess
         result1 = subprocess.run(command1, stdout=subprocess.PIPE, text=True)
-        res1 = result1.stdout
+        res1 = float(result1.stdout)
 
         # program1_outputs.append(result1.stdout)
-        res1 = float(output)
         speedup = res2 / res1
         # Print CSV line
         print(f"{i},{j},{res1},{res2},{speedup}")
