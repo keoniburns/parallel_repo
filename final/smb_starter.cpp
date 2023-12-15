@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
     AudioFile<double> audio;
     audio.load(infile);
-    audio.printSummary();
+    // audio.printSummary();
     const long numSampsToProcess = audio.getNumSamplesPerChannel();  // Number of samples to process
     /* this does not work all that well  */
     // const long fftFrameSize = 612;                                  // FFT frame size
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     // Create input and output buffers
     double indata[audio.getNumSamplesPerChannel()];
     // vector<double> indata = audio.samples[0];
-    cout << "bit depth is: " << bitD << endl;
+    // cout << "bit depth is: " << bitD << endl;
 
     clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     for (int i = 0; i < audio.getNumSamplesPerChannel(); i++) {
