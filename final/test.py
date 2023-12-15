@@ -44,5 +44,5 @@ print("sequential output", result2.stdout)
 res2 = float(result2.stdout)
 for i, output in enumerate(program1_outputs, start=2):
     print(f"speed up for iteration {i}")
-    print(res1)
+    print(output)
     # print(output)
