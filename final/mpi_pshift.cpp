@@ -37,18 +37,24 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
                    double *indata, double *outdata);
 
 int main(int argc, char *argv[]) {
+    struct timespec start, end;
     int my_rank, comm_sz;
     long local_n, n;
     double a, b, step_size, loc_a, loc_b;
+    int threads = NUM_THREADS;
 
     // command line args else is for quick testing
     string infile, outfile;
-    if (argc > 1) {
+
+    if (argc > 2) {
         infile = argv[1];
         outfile = argv[2];
     } else {
         infile = "./sounds/5min.wav";
         outfile = "./sounds/5minMPI.wav";
+    }
+    if (argc > 1) {
+        threads = atoi(argv[1]);
     }
     AudioFile<double> audio;
     audio.load(infile);
@@ -92,8 +98,9 @@ int main(int argc, char *argv[]) {
     loc_b = loc_a + local_n;
 
     // printf("my_rank=%d, start a=%lf, end b=%lf, and step_size=%ld\n", my_rank, loc_a, loc_b, local_n);
-
-    // Create local input
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+// Create local input
+#pragma omp parallel for num_threads(threads)
     double loc_indata[local_n];
     for (long i = 0; i < local_n; i++) {
         loc_indata[i] = audio.samples[0][i + loc_a];
@@ -127,6 +134,7 @@ int main(int argc, char *argv[]) {
 
     // Call the pitch shifting function
     // #pragma omp parallel num_threads(NUM_THREADS)s
+
     smbPitchShift(pitchShift, outSize, fftFrameSize, osamp, sampleRate, loc_indata, local_outdata);
 
     // if (my_rank == 0) {
@@ -157,6 +165,11 @@ int main(int argc, char *argv[]) {
     }
 
     MPI_Finalize();
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    double time_taken;
+    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("%f\n", time_taken);
     return 0;
 }
 

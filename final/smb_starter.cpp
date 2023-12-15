@@ -62,13 +62,17 @@ void smbPitchShift(double pitchShift, long numSampsToProcess, long fftFrameSize,
 
 int main(int argc, char *argv[]) {
     // Set up parameters
+    struct timespec start, end;
     string infile, outfile;
-    if (argc > 1) {
+    if (argc > 2) {
         infile = argv[1];
         outfile = argv[2];
     } else {
         infile = "sounds/5min.wav";
         outfile = "./5minSeq.wav";
+    }
+    if (argc > 1) {
+        threads = atoi(argv[1]);
     }
 
     AudioFile<double> audio;
@@ -87,6 +91,7 @@ int main(int argc, char *argv[]) {
     // vector<double> indata = audio.samples[0];
     cout << "bit depth is: " << bitD << endl;
 
+    clock_gettime(CLOCK_MONOTONIC_RAW, &start);
     for (int i = 0; i < audio.getNumSamplesPerChannel(); i++) {
         indata[i] = audio.samples[0][i];
     }
@@ -119,6 +124,12 @@ int main(int argc, char *argv[]) {
     audio.setAudioBuffer(final);
     audio.setSampleRate(sampleRate);
     audio.save(outfile);
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+    double time_taken;
+    time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+    time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+    printf("%f\n", time_taken);
     return 0;
 }
 
