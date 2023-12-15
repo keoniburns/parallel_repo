@@ -42,7 +42,7 @@ command2 = ["./smb", "sounds/" + infile, "sounds/" + outfile1]
 result2 = subprocess.run(command2, stdout=subprocess.PIPE, text=True)
 
 for i, output in enumerate(program1_outputs):
-    print(result2)
+    print(result2.stdout)
     print("iteration " + str(i))
     print(output)
-    print(double(result2) / douvle(output))
+    print(double(result2.stdout) / douvle(output))
